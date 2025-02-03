@@ -89,11 +89,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     lines.forEach((line) => {
       const span = document.createElement("span");
-      // Replace bold, italics, and inline code formatting manually
-      span.innerHTML = line
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold
-        .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics
-        .replace(/`(.*?)`/g, "<code>$1</code>"); // Inline code
+
+      // Apply text formatting only for the bot's response
+      if (sender === "bot") {
+        // Replace bold, italics, and inline code formatting manually
+        span.innerHTML = line
+          .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold
+          .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics
+          .replace(/`(.*?)`/g, "<code>$1</code>"); // Inline code
+      } else {
+        // For the user message, simply use the raw text without formatting
+        span.textContent = line;
+      }
+
       formattedMessage.appendChild(span);
       formattedMessage.appendChild(document.createElement("br")); // Add line break for each new line
     });
@@ -102,7 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Ensure MathJax renders any equations
-    MathJax.typesetPromise([messageElement]);
+    // Ensure MathJax renders any equations in the bot's response
+    if (sender === "bot") {
+      MathJax.typesetPromise([messageElement]);
+    }
   };
 });
