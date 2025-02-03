@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     greetingMessage = "Buenas noches, Maestro!";
   }
-
   greeting.textContent = greetingMessage;
 
   // Send message on button click or Enter key press
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   sendBtn.addEventListener("click", sendMessage);
-
   textarea.addEventListener("keypress", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -79,40 +77,98 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Add message to chat box with Markdown formatting conversion
   const addMessageToChatBox = (message, sender) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", sender);
 
-    // Create formatted message elements manually
+    // Create a container for the formatted message
     const formattedMessage = document.createElement("div");
-    const lines = message.split("\n");
 
-    lines.forEach((line) => {
-      const span = document.createElement("span");
+    // Convert Markdown-style formatting to HTML
+    let formattedText = message
+      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold (**bold**)
+      .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics (*italic*)
+      .replace(/```([\s\S]*?)```/g, (match, code) => {
+        return `
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>${code}</code></pre>
+          </div>
+        `;
+      })
+      .replace(/^- (.*)$/gm, "<li>$1</li>") // Unordered list (- item)
+      .replace(/^\d+\. (.*)$/gm, "<li>$1</li>") // Ordered list (1. item)
+      .replace(/---/g, "<hr>") // Horizontal rule (---)
+      .replace(/\n/g, "<br>") // Line breaks
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">') // Image ![alt](url)
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>'); // Links [text](url)
 
-      // Apply text formatting only for the bot's response
-      if (sender === "bot") {
-        // Replace bold, italics, and inline code formatting manually
-        span.innerHTML = line
-          .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold
-          .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics
-          .replace(/`(.*?)`/g, "<code>$1</code>"); // Inline code
-      } else {
-        // For the user message, simply use the raw text without formatting
-        span.textContent = line;
-      }
+    // Wrap list items in <ul> or <ol> if needed
+    formattedText = formattedText.replace(
+      /((<li>.*?<\/li>\s?)+)/gs,
+      "<ul>$1</ul>"
+    );
 
-      formattedMessage.appendChild(span);
-      formattedMessage.appendChild(document.createElement("br")); // Add line break for each new line
-    });
-
+    formattedMessage.innerHTML = formattedText;
     messageElement.appendChild(formattedMessage);
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 
     // Ensure MathJax renders any equations in the bot's response
-    if (sender === "bot") {
-      MathJax.typesetPromise([messageElement]);
+    if (sender === "bot" && window.MathJax) {
+      MathJax.typesetPromise([messageElement]).catch((err) =>
+        console.error(err)
+      );
     }
   };
+
+  // Copy code functionality with fallback support
+  window.copyCode = function (button) {
+    const codeElement = button.parentElement.querySelector("pre code");
+    if (!codeElement) return;
+
+    const codeText = codeElement.innerText;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard
+        .writeText(codeText)
+        .then(() => {
+          button.textContent = "Copied!";
+          setTimeout(() => (button.textContent = "Copy"), 2000);
+        })
+        .catch((err) => {
+          console.error("Clipboard API error:", err);
+          fallbackCopyText(codeText, button);
+        });
+    } else {
+      fallbackCopyText(codeText, button);
+    }
+  };
+
+  // Fallback copy function using a temporary textarea
+  function fallbackCopyText(text, button) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    // Position off-screen
+    textarea.style.position = "fixed";
+    textarea.style.top = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+      const successful = document.execCommand("copy");
+      if (successful) {
+        button.textContent = "Copied!";
+        setTimeout(() => (button.textContent = "Copy"), 2000);
+      } else {
+        console.error("Fallback: Copy command unsuccessful");
+      }
+    } catch (err) {
+      console.error("Fallback: Unable to copy", err);
+    }
+
+    document.body.removeChild(textarea);
+  }
 });
