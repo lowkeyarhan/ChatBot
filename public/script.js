@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Global conversation history array.
+  // The messages follow the structure: { role: "user" or "model", parts: [{ text: "..." }] }
+  const conversationHistory = [];
+
   // Auto-resize textarea
   textarea.addEventListener("input", () => {
     textarea.style.height = "auto";
@@ -31,12 +35,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   greeting.textContent = greetingMessage;
 
+  // Helper function to escape HTML characters.
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   // Send message on button click or Enter key press
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
     if (!userMessage) return textarea.focus();
 
+    // Add the user's message to the UI and conversation history.
     addMessageToChatBox(userMessage, "user");
+    conversationHistory.push({
+      role: "user",
+      parts: [{ text: userMessage }],
+    });
+
+    // Clear the textarea and reset its height.
     textarea.value = "";
     textarea.style.height = "30px";
 
@@ -44,25 +66,40 @@ document.addEventListener("DOMContentLoaded", () => {
       const apiKey = "AIzaSyD53qitgGA8RNRV3yD5qGt3ZIGu8_DKvoM";
       const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`;
 
+      // Build the payload using the "contents" key with the conversation history.
+      const payload = {
+        contents: conversationHistory,
+        generationConfig: {
+          temperature: 1,
+          topP: 0.95,
+          topK: 40,
+          maxOutputTokens: 8192,
+        },
+      };
+
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: userMessage }] }],
-          generationConfig: {
-            temperature: 1,
-            topP: 0.95,
-            topK: 40,
-            maxOutputTokens: 8192,
-          },
-        }),
+        body: JSON.stringify(payload),
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
       const data = await response.json();
+      // Extract the bot's response from the returned data.
       const botResponse =
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
         "Sorry, I couldn't process your request.";
+
+      // Add the bot's response to the UI and conversation history.
       addMessageToChatBox(botResponse, "bot");
+      conversationHistory.push({
+        role: "model",
+        parts: [{ text: botResponse }],
+      });
     } catch (error) {
       console.error("Error getting bot response:", error);
       addMessageToChatBox("Sorry, something went wrong.", "bot");
@@ -77,15 +114,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Add message to chat box with Markdown formatting conversion
+  // Add message to chat box with Markdown formatting conversion.
   const addMessageToChatBox = (message, sender) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", sender);
 
-    // Create a container for the formatted message
+    // Create a container for the formatted message.
     const formattedMessage = document.createElement("div");
 
-    // Convert Markdown-style formatting to HTML
+    // Convert Markdown-style formatting to HTML.
+    // Note the update on the code block replacement:
+    // We use escapeHtml() to display literal code.
     let formattedText = message
       .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold (**bold**)
       .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics (*italic*)
@@ -93,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return `
           <div class="code-block">
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            <pre><code>${code}</code></pre>
+            <pre><code>${escapeHtml(code)}</code></pre>
           </div>
         `;
       })
@@ -104,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">') // Image ![alt](url)
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>'); // Links [text](url)
 
-    // Wrap list items in <ul> or <ol> if needed
+    // Wrap list items in <ul> if needed.
     formattedText = formattedText.replace(
       /((<li>.*?<\/li>\s?)+)/gs,
       "<ul>$1</ul>"
@@ -115,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Ensure MathJax renders any equations in the bot's response
+    // Ensure MathJax renders any equations in the bot's response.
     if (sender === "bot" && window.MathJax) {
       MathJax.typesetPromise([messageElement]).catch((err) =>
         console.error(err)
@@ -123,12 +162,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Copy code functionality with fallback support
+  // Copy code functionality with fallback support.
   window.copyCode = function (button) {
     const codeElement = button.parentElement.querySelector("pre code");
     if (!codeElement) return;
 
-    const codeText = codeElement.innerText;
+    // Use textContent to get the raw code (which will be the escaped text).
+    const codeText = codeElement.textContent;
 
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard
@@ -146,11 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Fallback copy function using a temporary textarea
+  // Fallback copy function using a temporary textarea.
   function fallbackCopyText(text, button) {
     const textarea = document.createElement("textarea");
     textarea.value = text;
-    // Position off-screen
+    // Position off-screen.
     textarea.style.position = "fixed";
     textarea.style.top = "-9999px";
     document.body.appendChild(textarea);

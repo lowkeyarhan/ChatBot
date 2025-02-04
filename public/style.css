@@ -103,7 +103,6 @@ body {
   gap: 10px;
   flex: 1;
   padding-top: 20px; /* Space for the floating greeting */
-  padding-bottom: 100px; /* Space for the floating textarea */
 }
 
 #chat-box {
@@ -111,7 +110,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 100px; /* Space for the floating textarea */
 }
 
 #userchat {
