@@ -9,16 +9,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Global conversation history array.
-  // The messages follow the structure: { role: "user" or "model", parts: [{ text: "..." }] }
   const conversationHistory = [];
 
-  // Auto-resize textarea
+  // Auto-resize textarea.
   textarea.addEventListener("input", () => {
     textarea.style.height = "auto";
     textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
   });
 
-  // Dynamic greeting message
+  // Dynamic greeting message.
   const greeting = document.querySelector(".greeting h1");
   const date = new Date();
   const hours = date.getHours();
@@ -46,7 +45,17 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  // Send message on button click or Enter key press
+  // Helper function to scroll chat to the bottom.
+  function scrollChatToBottom() {
+    requestAnimationFrame(() => {
+      chatBox.scrollTo({
+        top: chatBox.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+  }
+
+  // Send message on button click or Enter key press.
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
     if (!userMessage) return textarea.focus();
@@ -62,18 +71,24 @@ document.addEventListener("DOMContentLoaded", () => {
     textarea.value = "";
     textarea.style.height = "30px";
 
+    // Add a placeholder "Bot is typing..." message.
+    const botPlaceholder = document.createElement("div");
+    botPlaceholder.classList.add("message", "bot", "loading");
+    botPlaceholder.innerHTML = `<div class="formatted-message">Pensador is typing...</div>`;
+    chatBox.appendChild(botPlaceholder);
+    scrollChatToBottom();
+
     try {
       const apiKey = "AIzaSyD53qitgGA8RNRV3yD5qGt3ZIGu8_DKvoM";
       const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`;
 
-      // Build the payload using the "contents" key with the conversation history.
       const payload = {
         contents: conversationHistory,
         generationConfig: {
           temperature: 1,
           topP: 0.95,
           topK: 40,
-          maxOutputTokens: 8192,
+          maxOutputTokens: 4096,
         },
       };
 
@@ -89,10 +104,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await response.json();
-      // Extract the bot's response from the returned data.
       const botResponse =
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
         "Sorry, I couldn't process your request.";
+
+      // Remove the placeholder.
+      botPlaceholder.remove();
 
       // Add the bot's response to the UI and conversation history.
       addMessageToChatBox(botResponse, "bot");
@@ -102,7 +119,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     } catch (error) {
       console.error("Error getting bot response:", error);
-      addMessageToChatBox("Sorry, something went wrong.", "bot");
+      botPlaceholder.innerHTML = `<div class="formatted-message">Sorry, something went wrong.</div>`;
+      setTimeout(() => {
+        botPlaceholder.remove();
+      }, 3000);
+    } finally {
+      scrollChatToBottom();
     }
   };
 
@@ -114,51 +136,85 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Add message to chat box with Markdown formatting conversion.
+  // Add message to chat box with improved formatting.
   const addMessageToChatBox = (message, sender) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", sender);
 
-    // Create a container for the formatted message.
     const formattedMessage = document.createElement("div");
+    formattedMessage.classList.add("formatted-message");
 
-    // Convert Markdown-style formatting to HTML.
-    // Note the update on the code block replacement:
-    // We use escapeHtml() to display literal code.
-    let formattedText = message
-      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold (**bold**)
-      .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics (*italic*)
-      .replace(/```([\s\S]*?)```/g, (match, code) => {
-        return `
-          <div class="code-block">
-            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            <pre><code>${escapeHtml(code)}</code></pre>
-          </div>
-        `;
-      })
-      .replace(/^- (.*)$/gm, "<li>$1</li>") // Unordered list (- item)
-      .replace(/^\d+\. (.*)$/gm, "<li>$1</li>") // Ordered list (1. item)
-      .replace(/---/g, "<hr>") // Horizontal rule (---)
-      .replace(/\n/g, "<br>") // Line breaks
-      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">') // Image ![alt](url)
-      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>'); // Links [text](url)
+    // Attempt to parse the message as JSON.
+    // If the response is structured JSON, use it.
+    let parsedAsJson = false;
+    try {
+      const parsed = JSON.parse(message);
+      if (parsed && Array.isArray(parsed.blocks)) {
+        parsedAsJson = true;
+        let htmlContent = "";
+        parsed.blocks.forEach((block) => {
+          if (block.type === "text") {
+            // Wrap text blocks in paragraphs.
+            htmlContent += `<p>${escapeHtml(block.content)}</p>`;
+          } else if (block.type === "code") {
+            // Render code blocks.
+            const safeCode = escapeHtml(block.content);
+            htmlContent += `
+              <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><code>${safeCode}</code></pre>
+              </div>`;
+          } else if (block.type === "image") {
+            htmlContent += `<img src="${block.url}" alt="${escapeHtml(
+              block.alt || ""
+            )}" />`;
+          } else {
+            // Fallback for unknown types.
+            htmlContent += `<p>${escapeHtml(block.content)}</p>`;
+          }
+        });
+        formattedMessage.innerHTML = htmlContent;
+      }
+    } catch (e) {
+      // Not valid JSON—proceed with Markdown formatting.
+      parsedAsJson = false;
+    }
 
-    // Wrap list items in <ul> if needed.
-    formattedText = formattedText.replace(
-      /((<li>.*?<\/li>\s?)+)/gs,
-      "<ul>$1</ul>"
-    );
+    if (!parsedAsJson) {
+      // For user messages, escape HTML to prevent unwanted rendering.
+      if (sender === "user") {
+        message = escapeHtml(message);
+      }
 
-    formattedMessage.innerHTML = formattedText;
+      // First, process inline markdown for bold, italics, and code blocks.
+      let formattedText = message
+        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold
+        .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics
+        .replace(/```([\s\S]*?)```/g, (match, code) => {
+          const safeCode = sender === "user" ? code : escapeHtml(code);
+          return `
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code>${safeCode}</code></pre>
+            </div>`;
+        });
+
+      // Instead of a simple newline-to-<br> replacement,
+      // split text by two (or more) newlines to form paragraphs.
+      const paragraphs = formattedText.split(/\n{2,}/).map((para) => {
+        // Replace single newlines with <br> only within a paragraph.
+        return `<p>${para.replace(/\n/g, "<br>")}</p>`;
+      });
+      formattedText = paragraphs.join("");
+      formattedMessage.innerHTML = formattedText;
+    }
+
     messageElement.appendChild(formattedMessage);
     chatBox.appendChild(messageElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    scrollChatToBottom();
 
-    // Ensure MathJax renders any equations in the bot's response.
     if (sender === "bot" && window.MathJax) {
-      MathJax.typesetPromise([messageElement]).catch((err) =>
-        console.error(err)
-      );
+      MathJax.typesetPromise([messageElement]).catch(console.error);
     }
   };
 
@@ -167,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const codeElement = button.parentElement.querySelector("pre code");
     if (!codeElement) return;
 
-    // Use textContent to get the raw code (which will be the escaped text).
     const codeText = codeElement.textContent;
 
     if (navigator.clipboard && window.isSecureContext) {
@@ -186,16 +241,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Fallback copy function using a temporary textarea.
   function fallbackCopyText(text, button) {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    // Position off-screen.
-    textarea.style.position = "fixed";
-    textarea.style.top = "-9999px";
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
+    const tempTextarea = document.createElement("textarea");
+    tempTextarea.value = text;
+    tempTextarea.style.position = "fixed";
+    tempTextarea.style.top = "-9999px";
+    document.body.appendChild(tempTextarea);
+    tempTextarea.focus();
+    tempTextarea.select();
 
     try {
       const successful = document.execCommand("copy");
@@ -209,6 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Fallback: Unable to copy", err);
     }
 
-    document.body.removeChild(textarea);
+    document.body.removeChild(tempTextarea);
   }
 });

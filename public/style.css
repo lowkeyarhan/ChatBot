@@ -116,6 +116,10 @@ body {
   display: flex;
   gap: 2rem;
   flex-direction: column;
+  overflow-y: auto; /* vertical scrolling */
+  overflow-x: hidden; /* prevent horizontal scroll */
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 /* Chat Messages */
