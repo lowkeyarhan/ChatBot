@@ -71,10 +71,17 @@ document.addEventListener("DOMContentLoaded", () => {
     textarea.value = "";
     textarea.style.height = "30px";
 
-    // Add a placeholder "Bot is typing..." message.
+    // Add a placeholder "Bot is typing..." message with animation.
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
-    botPlaceholder.innerHTML = `<div class="formatted-message">Pensador is typing...</div>`;
+    botPlaceholder.innerHTML = `
+  <div class="formatted-message">
+    <div class="typing-animation">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>`;
     chatBox.appendChild(botPlaceholder);
     scrollChatToBottom();
 
@@ -128,7 +135,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  sendBtn.addEventListener("click", sendMessage);
+  // Ensure sendMessage is correctly bound to the send button and Enter key press events.
+  sendBtn.addEventListener("click", () => {
+    sendMessage();
+  });
+
   textarea.addEventListener("keypress", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -155,14 +166,19 @@ document.addEventListener("DOMContentLoaded", () => {
         parsed.blocks.forEach((block) => {
           if (block.type === "text") {
             // Wrap text blocks in paragraphs.
-            htmlContent += `<p>${escapeHtml(block.content)}</p>`;
+            htmlContent += `<p>${escapeHtml(block.content).replace(
+              /\n/g,
+              "<br>"
+            )}</p>`;
           } else if (block.type === "code") {
             // Render code blocks.
             const safeCode = escapeHtml(block.content);
+            const language = block.language || "plaintext";
             htmlContent += `
               <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <pre><code>${safeCode}</code></pre>
+                <span class="language-label">${language}</span>
+                <pre><code class="language-${language}">${safeCode}</code></pre>
               </div>`;
           } else if (block.type === "image") {
             htmlContent += `<img src="${block.url}" alt="${escapeHtml(
@@ -182,10 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!parsedAsJson) {
       // For user messages, escape HTML to prevent unwanted rendering.
-      if (sender === "user") {
-        message = escapeHtml(message);
-      }
-
       // First, process inline markdown for bold, italics, and code blocks.
       let formattedText = message
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold
@@ -212,10 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
     messageElement.appendChild(formattedMessage);
     chatBox.appendChild(messageElement);
     scrollChatToBottom();
-
-    if (sender === "bot" && window.MathJax) {
-      MathJax.typesetPromise([messageElement]).catch(console.error);
-    }
   };
 
   // Copy code functionality with fallback support.
