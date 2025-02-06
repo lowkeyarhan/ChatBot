@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             htmlContent += `<p>${escapeHtml(block.content).replace(
               /\n/g,
               "<br>"
-            )}</p>`;
+            )}</p>${sender === "bot" ? "<br>" : ""}`;
           } else if (block.type === "code") {
             // Render code blocks.
             const safeCode = escapeHtml(block.content);
@@ -215,7 +215,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // split text by two (or more) newlines to form paragraphs.
       const paragraphs = formattedText.split(/\n{2,}/).map((para) => {
         // Replace single newlines with <br> only within a paragraph.
-        return `<p>${para.replace(/\n/g, "<br>")}</p>`;
+        return `<p>${para.replace(/\n/g, "<br>")}</p>${
+          sender === "bot" ? "<br>" : ""
+        }`;
       });
       formattedText = paragraphs.join("");
       formattedMessage.innerHTML = formattedText;

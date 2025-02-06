@@ -153,7 +153,6 @@ body {
   margin-right: auto; /* Align to the left */
   animation: receiveMessage 0.5s ease-out;
 }
-
 .message p {
   margin: 0;
   font-family: "Poppins", sans-serif;
