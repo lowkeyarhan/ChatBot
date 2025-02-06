@@ -152,6 +152,7 @@ body {
   color: rgb(204, 225, 252);
   margin-right: auto; /* Align to the left */
   animation: receiveMessage 0.5s ease-out;
+  border: 1px solid rgba(204, 224, 252, 0.2);
 }
 
 .message p {
@@ -275,15 +276,13 @@ body {
 /* Code block container */
 .code-block {
   position: relative;
-  background-color: #878787; /* Dark background */
-  /* border: 1px solid #3e4451; */
+  background-color: #393a3d; /* Dark background */
   border-radius: 8px;
   overflow-x: auto;
   font-family: "Fira Code", monospace;
   font-size: 14px;
   line-height: 1.4;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  margin: 0px;
 }
 
 /* Preformatted text styling */
@@ -302,85 +301,15 @@ body {
   color: inherit;
 }
 
-/* Syntax highlighting rules (used by syntax highlighters like Prism.js or Highlight.js) */
-
-/* Comments, prolog, doctype, and CDATA */
-.token.comment,
-.token.prolog,
-.token.doctype,
-.token.cdata {
-  color: #5c6370;
-  font-style: italic;
-}
-
-/* Punctuation */
-.token.punctuation {
-  color: #abb2bf;
-}
-
-/* Properties, tags, constants, symbols, and deleted text */
-.token.property,
-.token.tag,
-.token.constant,
-.token.symbol,
-.token.deleted {
-  color: #e06c75;
-}
-
-/* Booleans and numbers */
-.token.boolean,
-.token.number {
-  color: #d19a66;
-}
-
-/* Selectors, attributes, strings, characters, built-in and inserted text */
-.token.selector,
-.token.attr-name,
-.token.string,
-.token.char,
-.token.builtin,
-.token.inserted {
-  color: #98c379;
-}
-
-/* Operators, entities, and URLs */
-.token.operator,
-.token.entity,
-.token.url,
-.language-css .token.string,
-.style .token.string {
-  color: #56b6c2;
-}
-
-/* At-rules, attribute values, and keywords */
-.token.atrule,
-.token.attr-value,
-.token.keyword {
-  color: #c678dd;
-}
-
-/* Functions and class names */
-.token.function,
-.token.class-name {
-  color: #61afef;
-}
-
-/* Regex, important tokens, and variables */
-.token.regex,
-.token.important,
-.token.variable {
-  color: #e5c07b;
-}
-
 /* Copy button styling */
 .copy-btn {
   position: absolute;
   top: 8px;
   right: 8px;
-  background-color: #3e4451;
-  color: #abb2bf;
+  background-color: #282c34; /* Dark background */
+  color: rgb(204, 225, 252);
   border: none;
-  padding: 4px 8px;
+  padding: 5px;
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
@@ -444,6 +373,7 @@ body {
     opacity: 0.3;
   }
 }
-b{
+b {
   font-size: 18px;
+  font-weight: 650;
 }

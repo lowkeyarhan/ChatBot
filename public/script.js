@@ -166,10 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
         parsed.blocks.forEach((block) => {
           if (block.type === "text") {
             // Wrap text blocks in paragraphs.
-            htmlContent += `<p>${escapeHtml(block.content).replace(
-              /\n/g,
-              "<br>"
-            )}</p>${sender === "bot" ? "<br>" : ""}`;
+            htmlContent += `<p>${escapeHtml(block.content)
+              .replace(/\n/g, "<br>")
+              .replace(/^\* /gm, "&#8226; ")}</p>${sender === "bot" ? "<br>" : ""}`;
           } else if (block.type === "code") {
             // Render code blocks.
             const safeCode = escapeHtml(block.content);
