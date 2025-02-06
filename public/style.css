@@ -288,7 +288,7 @@ body {
 
 /* Preformatted text styling */
 .code-block pre {
-  margin: 0; /* Remove blank space under the pre block */
+  margin: 0px; /* Remove blank space under the pre block */
   white-space: pre;
   max-height: 500px; /* For very long code blocks */
   overflow-y: auto;

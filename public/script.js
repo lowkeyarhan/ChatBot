@@ -175,11 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const safeCode = escapeHtml(block.content);
             const language = block.language || "plaintext";
             htmlContent += `
-              <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <span class="language-label">${language}</span>
-                <pre><code class="language-${language}">${safeCode}</code></pre>
-              </div>`;
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <span class="language-label">${language}</span>
+              <pre><code class="language-${language}">${safeCode}</code></pre>
+            </div>`;
           } else if (block.type === "image") {
             htmlContent += `<img src="${block.url}" alt="${escapeHtml(
               block.alt || ""
@@ -205,10 +205,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .replace(/```([\s\S]*?)```/g, (match, code) => {
           const safeCode = sender === "user" ? code : escapeHtml(code);
           return `
-            <div class="code-block">
-              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-              <pre><code>${safeCode}</code></pre>
-            </div>`;
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>${safeCode}</code></pre>
+          </div>`;
         });
 
       // Instead of a simple newline-to-<br> replacement,
