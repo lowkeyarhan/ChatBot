@@ -201,7 +201,7 @@ body {
   display: flex;
   font-family: "Poppins", serif;
   width: 100%;
-  font-size: 16px;
+  font-size: 15px;
   height: 40px;
   border: none;
   resize: none;
@@ -276,12 +276,12 @@ body {
 .code-block {
   position: relative;
   background-color: #878787; /* Dark background */
-  border: 1px solid #3e4451;
+  /* border: 1px solid #3e4451; */
   border-radius: 8px;
   overflow-x: auto;
   font-family: "Fira Code", monospace;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.4;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   margin: 0px;
 }
@@ -445,6 +445,5 @@ body {
   }
 }
 b{
-  font-size: 20px;
-  font-weight: 300;
+  font-size: 18px;
 }
