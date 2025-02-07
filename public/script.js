@@ -8,16 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Global conversation history array.
   const conversationHistory = [];
 
-  // Auto-resize textarea.
   textarea.addEventListener("input", () => {
     textarea.style.height = "auto";
     textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
   });
 
-  // Dynamic greeting message.
   const greeting = document.querySelector(".greeting h1");
   const date = new Date();
   const hours = date.getHours();
@@ -34,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   greeting.textContent = greetingMessage;
 
-  // Helper function to escape HTML characters.
   function escapeHtml(str) {
     if (!str) return "";
     return str
@@ -45,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  // Helper function to scroll chat to the bottom.
   function scrollChatToBottom() {
     requestAnimationFrame(() => {
       chatBox.scrollTo({
@@ -55,33 +50,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Send message on button click or Enter key press.
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
     if (!userMessage) return textarea.focus();
 
-    // Add the user's message to the UI and conversation history.
     addMessageToChatBox(userMessage, "user");
     conversationHistory.push({
       role: "user",
       parts: [{ text: userMessage }],
     });
 
-    // Clear the textarea and reset its height.
     textarea.value = "";
     textarea.style.height = "30px";
 
-    // Add a placeholder "Bot is typing..." message with animation.
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
     botPlaceholder.innerHTML = `
-  <div class="formatted-message">
-    <div class="typing-animation">
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-  </div>`;
+      <div class="formatted-message">
+        <div class="typing-animation">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>`;
     chatBox.appendChild(botPlaceholder);
     scrollChatToBottom();
 
@@ -115,10 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
         "Sorry, I couldn't process your request.";
 
-      // Remove the placeholder.
       botPlaceholder.remove();
 
-      // Add the bot's response to the UI and conversation history.
       addMessageToChatBox(botResponse, "bot");
       conversationHistory.push({
         role: "model",
@@ -135,7 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Ensure sendMessage is correctly bound to the send button and Enter key press events.
   sendBtn.addEventListener("click", () => {
     sendMessage();
   });
@@ -147,7 +135,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Add message to chat box with improved formatting.
   const addMessageToChatBox = (message, sender) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", sender);
@@ -155,8 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedMessage = document.createElement("div");
     formattedMessage.classList.add("formatted-message");
 
-    // Attempt to parse the message as JSON.
-    // If the response is structured JSON, use it.
     let parsedAsJson = false;
     try {
       const parsed = JSON.parse(message);
@@ -165,57 +150,48 @@ document.addEventListener("DOMContentLoaded", () => {
         let htmlContent = "";
         parsed.blocks.forEach((block) => {
           if (block.type === "text") {
-            // Wrap text blocks in paragraphs.
             htmlContent += `<p>${escapeHtml(block.content)
               .replace(/\n/g, "<br>")
               .replace(/^\* /gm, "&#8226; ")}</p>${
               sender === "bot" ? "<br>" : ""
             }`;
           } else if (block.type === "code") {
-            // Render code blocks.
             const safeCode = escapeHtml(block.content);
             const language = block.language || "plaintext";
             htmlContent += `
-            <div class="code-block">
-              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-              <span class="language-label">${language}</span>
-              <pre><code class="language-${language}">${safeCode}</code></pre>
-            </div>`;
+              <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <span class="language-label">${language}</span>
+                <pre><code class="language-${language}">${safeCode}</code></pre>
+              </div>`;
           } else if (block.type === "image") {
             htmlContent += `<img src="${block.url}" alt="${escapeHtml(
               block.alt || ""
             )}" />`;
           } else {
-            // Fallback for unknown types.
             htmlContent += `<p>${escapeHtml(block.content)}</p>`;
           }
         });
         formattedMessage.innerHTML = htmlContent;
       }
     } catch (e) {
-      // Not valid JSON—proceed with Markdown formatting.
       parsedAsJson = false;
     }
 
     if (!parsedAsJson) {
-      // For user messages, escape HTML to prevent unwanted rendering.
-      // First, process inline markdown for bold, italics, and code blocks.
       let formattedText = message
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>") // Bold
-        .replace(/\*(.*?)\*/g, "<i>$1</i>") // Italics
+        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+        .replace(/\*(.*?)\*/g, "<i>$1</i>")
         .replace(/```([\s\S]*?)```/g, (match, code) => {
           const safeCode = sender === "user" ? code : escapeHtml(code);
           return `
-          <div class="code-block">
-            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            <pre><code>${safeCode}</code></pre>
-          </div>`;
+            <div class="code-block">
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+              <pre><code>${safeCode}</code></pre>
+            </div>`;
         });
 
-      // Instead of a simple newline-to-<br> replacement,
-      // split text by two (or more) newlines to form paragraphs.
       const paragraphs = formattedText.split(/\n{2,}/).map((para) => {
-        // Replace single newlines with <br> only within a paragraph.
         return `<p>${para.replace(/\n/g, "<br>")}</p>${
           sender === "bot" ? "<br>" : ""
         }`;
@@ -229,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollChatToBottom();
   };
 
-  // Copy code functionality with fallback support.
   window.copyCode = function (button) {
     const codeElement = button.parentElement.querySelector("pre code");
     if (!codeElement) return;
