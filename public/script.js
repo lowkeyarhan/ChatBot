@@ -193,11 +193,13 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
         });
 
-      const paragraphs = formattedText.split(/\n{2,}/).map((para, index, array) => {
-        return `<p>${para.replace(/\n/g, "<br>")}</p>${
-          sender === "bot" && index !== array.length - 1 ? "<br>" : ""
-        }`;
-      });
+      const paragraphs = formattedText
+        .split(/\n{2,}/)
+        .map((para, index, array) => {
+          return `<p>${para.replace(/\n/g, "<br>")}</p>${
+            sender === "bot" && index !== array.length - 1 ? "<br>" : ""
+          }`;
+        });
       formattedText = paragraphs.join("");
       formattedMessage.innerHTML = formattedText;
     }
