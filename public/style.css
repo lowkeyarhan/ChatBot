@@ -159,6 +159,21 @@ body {
   margin-right: 8px; /* Add some space between the bullet and the text */
 }
 
+/* Ensure bullets are styled as circle dots */
+.message ul {
+  list-style-type: disc; /* Use disc for circle dots */
+  padding-left: 20px; /* Add some padding to align bullets properly */
+}
+
+.message ul li {
+  margin-bottom: 8px; /* Add some space between list items */
+}
+
+.message ul li::before {
+  content: "•"; /* Use a bullet character */
+  color: #e0e0e0; /* Match the text color */
+  margin-right: 8px; /* Add some space between the bullet and the text */
+}
 .message code {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 2px 5px;
