@@ -208,14 +208,14 @@ body {
   font-family: "Poppins", serif;
   font-size: 15px;
   line-height: 1.2;
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     to right,
     #ffffffcf,
     rgba(63, 63, 63, 0.854),
     #696969a1
   );
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent; */
 }
 
 .txtarea textarea:focus {
