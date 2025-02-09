@@ -151,6 +151,12 @@ body {
 .message p {
   margin: 0;
   font-size: 14px;
+  line-height: 1.5;
+}
+
+.message p::before {
+  color: #e0e0e0; /* Match the text color */
+  margin-right: 8px; /* Add some space between the bullet and the text */
 }
 
 .message code {

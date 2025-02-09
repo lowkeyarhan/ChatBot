@@ -31,16 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   greeting.textContent = greetingMessage;
 
-  function escapeHtml(str) {
-    if (!str) return "";
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
   function scrollChatToBottom() {
     requestAnimationFrame(() => {
       chatBox.scrollTo({
@@ -135,6 +125,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+    // Remove the line that escapes apostrophes
+  }
+
+  //adding messages to chat box
   const addMessageToChatBox = (message, sender) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", sender);
@@ -152,7 +153,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (block.type === "text") {
             htmlContent += `<p>${escapeHtml(block.content)
               .replace(/\n/g, "<br>")
-              .replace(/^\* /gm, sender === "bot" ? "&#9679; " : "&#8226; ")}</p>`;
+              .replace(
+                /^\* /gm,
+                sender === "bot" ? "&#9679; " : "&#8226; "
+              )}</p>`;
             if (sender === "bot" && index !== array.length - 1) {
               htmlContent += "<br>";
             }
@@ -196,7 +200,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const paragraphs = formattedText
         .split(/\n{2,}/)
         .map((para, index, array) => {
-          return `<p>${para.replace(/\n/g, "<br>").replace(/^\* /gm, sender === "bot" ? "&#9679; " : "&#8226; ")}</p>${
+          return `<p>${para
+            .replace(/\n/g, "<br>")
+            .replace(
+              /^\* /gm,
+              sender === "bot" ? "&#9679; " : "&#8226; "
+            )}</p>${
             sender === "bot" && index !== array.length - 1 ? "<br>" : ""
           }`;
         });
