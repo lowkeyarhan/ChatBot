@@ -148,13 +148,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (parsed && Array.isArray(parsed.blocks)) {
         parsedAsJson = true;
         let htmlContent = "";
-        parsed.blocks.forEach((block) => {
+        parsed.blocks.forEach((block, index, array) => {
           if (block.type === "text") {
             htmlContent += `<p>${escapeHtml(block.content)
               .replace(/\n/g, "<br>")
-              .replace(/^\* /gm, "&#8226; ")}</p>${
-              sender === "bot" ? "<br>" : ""
-            }`;
+              .replace(/^\* /gm, "&#8226; ")}</p>`;
+            if (sender === "bot" && index !== array.length - 1) {
+              htmlContent += "<br>";
+            }
           } else if (block.type === "code") {
             const safeCode = escapeHtml(block.content);
             const language = block.language || "plaintext";
@@ -182,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let formattedText = message
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>")
+        .replace(/'([^']+)'/g, "<span class='highlight'>$1</span>")
         .replace(/```([\s\S]*?)```/g, (match, code) => {
           const safeCode = sender === "user" ? code : escapeHtml(code);
           return `
@@ -191,9 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>`;
         });
 
-      const paragraphs = formattedText.split(/\n{2,}/).map((para) => {
+      const paragraphs = formattedText.split(/\n{2,}/).map((para, index, array) => {
         return `<p>${para.replace(/\n/g, "<br>")}</p>${
-          sender === "bot" ? "<br>" : ""
+          sender === "bot" && index !== array.length - 1 ? "<br>" : ""
         }`;
       });
       formattedText = paragraphs.join("");

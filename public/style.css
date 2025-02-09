@@ -146,6 +146,7 @@ body {
   margin-right: auto;
   border: none;
   animation: receiveMessage 0.5s ease-out;
+  background-color: rosybrown;
 }
 
 .message p {
