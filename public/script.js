@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (block.type === "text") {
             htmlContent += `<p>${escapeHtml(block.content)
               .replace(/\n/g, "<br>")
-              .replace(/^\* /gm, "&#8226; ")}</p>`;
+              .replace(/^\* /gm, sender === "bot" ? "&#9679; " : "&#8226; ")}</p>`;
             if (sender === "bot" && index !== array.length - 1) {
               htmlContent += "<br>";
             }
@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const paragraphs = formattedText
         .split(/\n{2,}/)
         .map((para, index, array) => {
-          return `<p>${para.replace(/\n/g, "<br>")}</p>${
+          return `<p>${para.replace(/\n/g, "<br>").replace(/^\* /gm, sender === "bot" ? "&#9679; " : "&#8226; ")}</p>${
             sender === "bot" && index !== array.length - 1 ? "<br>" : ""
           }`;
         });
