@@ -187,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
       let formattedText = message
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>")
-        .replace(/'([^']+)'/g, "<span class='highlight'>$1</span>")
         .replace(/```([\s\S]*?)```/g, (match, code) => {
           const safeCode = sender === "user" ? code : escapeHtml(code);
           return `
@@ -200,14 +199,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const paragraphs = formattedText
         .split(/\n{2,}/)
         .map((para, index, array) => {
-          return `<p>${para
-            .replace(/\n/g, "<br>")
-            .replace(
-              /^\* /gm,
-              sender === "bot" ? "&#9679; " : "&#8226; "
-            )}</p>${
-            sender === "bot" && index !== array.length - 1 ? "<br>" : ""
-          }`;
+          // Remove extra line breaks after <pre> blocks
+          if (para.includes("<pre>")) {
+            return `<p>${para
+              .replace(/\n/g, "<br>")
+              .replace(
+                /^\* /gm,
+                sender === "bot" ? "&#9679; " : "&#8226; "
+              )}</p>`;
+          } else {
+            return `<p>${para
+              .replace(/\n/g, "<br>")
+              .replace(
+                /^\* /gm,
+                sender === "bot" ? "&#9679; " : "&#8226; "
+              )}</p>${
+              sender === "bot" && index !== array.length - 1 ? "<br>" : ""
+            }`;
+          }
         });
       formattedText = paragraphs.join("");
       formattedMessage.innerHTML = formattedText;
