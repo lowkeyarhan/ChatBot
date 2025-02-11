@@ -78,7 +78,7 @@ body {
     to right,
     #517cff,
     #546eff,
-    #fc7a7a,
+    #ff6262,
     #ff0000
   );
   background-clip: text;
@@ -246,7 +246,7 @@ body {
 .txtarea .btns i {
   font-size: 25px;
   cursor: pointer;
-  color: #e0e0e0;
+  color: #bec0ca;
 }
 
 .txtarea .btns {
