@@ -187,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let formattedText = message
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>")
+        .replace(/\$\\boxed\{(.*?)\}\$/g, '<span class="math">\\boxed{$1}</span>')
         .replace(/```([\s\S]*?)```/g, (match, code) => {
           const safeCode = sender === "user" ? code : escapeHtml(code);
           return `
@@ -224,6 +225,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     messageElement.appendChild(formattedMessage);
     chatBox.appendChild(messageElement);
+
+    // Add this block to render math expressions
+    document.querySelectorAll('.math').forEach(element => {
+      katex.render(element.textContent, element, {
+        throwOnError: false,
+        displayMode: false
+      });
+    });
+
     scrollChatToBottom();
   };
 
