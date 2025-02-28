@@ -366,8 +366,13 @@ body {
 }
 
 @keyframes blink {
-  from, to { border-color: transparent }
-  50% { border-color: #e0e0e0; }
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #e0e0e0;
+  }
 }
 
 .loading .formatted-message {
@@ -400,6 +405,10 @@ p code {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
