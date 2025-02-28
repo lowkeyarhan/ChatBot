@@ -187,14 +187,13 @@ document.addEventListener("DOMContentLoaded", () => {
       let formattedText = message
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>")
-        .replace(/\$\\boxed\{(.*?)\}\$/g, '<span class="math">\\boxed{$1}</span>')
-        .replace(/```([\s\S]*?)```/g, (match, code) => {
+        .replace(
+          /\$\\boxed\{(.*?)\}\$/g,
+          '<span class="math">\\boxed{$1}</span>'
+        )
+        .replace(/```(\w+)?\n?([\s\S]*?)```/g, (match, language = 'plaintext', code) => {
           const safeCode = sender === "user" ? code : escapeHtml(code);
-          return `
-            <div class="code-block">
-              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-              <pre><code>${safeCode}</code></pre>
-            </div>`;
+          return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div>`;
         });
 
       const paragraphs = formattedText
@@ -227,10 +226,10 @@ document.addEventListener("DOMContentLoaded", () => {
     chatBox.appendChild(messageElement);
 
     // Add this block to render math expressions
-    document.querySelectorAll('.math').forEach(element => {
+    document.querySelectorAll(".math").forEach((element) => {
       katex.render(element.textContent, element, {
         throwOnError: false,
-        displayMode: false
+        displayMode: false,
       });
     });
 
