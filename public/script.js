@@ -64,6 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function typeMessage(element, text, index = 0) {
+    if (index < text.length) {
+      element.innerHTML += text.charAt(index);
+      setTimeout(() => typeMessage(element, text, index + 1), 20);
+    }
+  }
+
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
     if (!userMessage) return textarea.focus();
@@ -82,11 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     botPlaceholder.classList.add("message", "bot", "loading");
     botPlaceholder.innerHTML = `
       <div class="formatted-message">
-        <div class="typing-animation">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
+        <span class="typewriter">El Pensador is thinking</span>
       </div>`;
     chatBox.appendChild(botPlaceholder);
     scrollChatToBottom();
@@ -123,8 +126,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       botPlaceholder.remove();
 
-      addMessageToChatBox(botResponse, "bot");
+      const tempDiv = document.createElement('div');
+      addMessageToChatBox(botResponse, "bot", tempDiv);
+      
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message", "bot");
+      const formattedMessage = document.createElement("div");
+      formattedMessage.classList.add("formatted-message");
+      messageElement.appendChild(formattedMessage);
+      chatBox.appendChild(messageElement);
+      
+      typeMessage(formattedMessage, tempDiv.innerHTML);
       playMessageReceivedSound();
+
       conversationHistory.push({
         role: "model",
         parts: [{ text: botResponse }],
@@ -162,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   //adding messages to chat box
-  const addMessageToChatBox = (message, sender) => {
+  const addMessageToChatBox = (message, sender, tempDiv) => {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", sender);
 
