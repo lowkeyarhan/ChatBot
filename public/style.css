@@ -315,7 +315,7 @@ body {
   color: #ffffff;
 }
 
-.code-block code {
+.code-block pre code {
   color: inherit;
   background-color: transparent;
   font-family: "Fira Code", monospace;
@@ -382,4 +382,13 @@ body {
 b {
   font-size: 18px;
   font-weight: 650;
+}
+
+/* Add this for inline code styling */
+p code {
+  background-color: rgba(65, 69, 72, 0.5);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Fira Code", monospace;
+  color: #3982f0;
 }

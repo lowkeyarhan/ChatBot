@@ -187,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let formattedText = message
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>")
+        .replace(/(?<!`)`([^`\n]+)`(?!`)/g, "<code>$1</code>")
         .replace(
           /\$\\boxed\{(.*?)\}\$/g,
           '<span class="math">\\boxed{$1}</span>'
