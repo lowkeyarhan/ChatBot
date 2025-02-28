@@ -191,10 +191,13 @@ document.addEventListener("DOMContentLoaded", () => {
           /\$\\boxed\{(.*?)\}\$/g,
           '<span class="math">\\boxed{$1}</span>'
         )
-        .replace(/```(\w+)?\n?([\s\S]*?)```/g, (match, language = 'plaintext', code) => {
-          const safeCode = sender === "user" ? code : escapeHtml(code);
-          return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div>`;
-        });
+        .replace(
+          /```(\w+)?\n?([\s\S]*?)```/g,
+          (match, language = "plaintext", code) => {
+            const safeCode = sender === "user" ? code : escapeHtml(code);
+            return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div>`;
+          }
+        );
 
       const paragraphs = formattedText
         .split(/\n{2,}/)

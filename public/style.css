@@ -295,7 +295,6 @@ body {
   flex-direction: column;
   height: fit-content;
 }
-
 .language-label {
   position: absolute;
   top: 10px;
@@ -309,10 +308,10 @@ body {
   margin: 0px;
   white-space: pre;
   /* max-height: 500px; */
-  margin-top: 40px;
-  padding: 10px;
   overflow-y: auto;
-  background-color: rgb(27, 27, 60);
+  padding: 15px;
+  margin-top: 40px;
+  background-color: rgb(24, 24, 55);
   border: none;
   color: #ffffff;
 }
