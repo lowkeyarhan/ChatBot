@@ -40,11 +40,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function playMessageSentSound() {
+    try {
+      const audio = new Audio("/sounds/message-sent.mp3");
+      audio.volume = 0.5;
+      audio.play().catch((error) => {
+        console.log("Error playing sent sound:", error);
+      });
+    } catch (error) {
+      console.log("Error creating audio:", error);
+    }
+  }
+
+  function playMessageReceivedSound() {
+    try {
+      const audio = new Audio("/sounds/message-recieved.mp3");
+      audio.volume = 1;
+      audio.play().catch((error) => {
+        console.log("Error playing received sound:", error);
+      });
+    } catch (error) {
+      console.log("Error creating audio:", error);
+    }
+  }
+
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
     if (!userMessage) return textarea.focus();
 
     addMessageToChatBox(userMessage, "user");
+    playMessageSentSound();
     conversationHistory.push({
       role: "user",
       parts: [{ text: userMessage }],
@@ -99,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       botPlaceholder.remove();
 
       addMessageToChatBox(botResponse, "bot");
+      playMessageReceivedSound();
       conversationHistory.push({
         role: "model",
         parts: [{ text: botResponse }],

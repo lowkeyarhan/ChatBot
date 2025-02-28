@@ -154,26 +154,30 @@ body {
   line-height: 1.5;
 }
 
-.message p::before {
-  color: #e0e0e0; /* Match the text color */
-  margin-right: 8px; /* Add some space between the bullet and the text */
-}
-
-/* Ensure bullets are styled as circle dots */
+/* Update bullet styling */
 .message ul {
-  list-style-type: disc; /* Use disc for circle dots */
-  padding-left: 20px; /* Add some padding to align bullets properly */
+  list-style: none;
+  padding-left: 20px;
+  margin: 8px 0;
 }
 
 .message ul li {
-  margin-bottom: 8px; /* Add some space between list items */
+  position: relative;
+  padding-left: 20px;
+  margin: 4px 0;
+  line-height: 1.5;
 }
 
 .message ul li::before {
-  content: "•"; /* Use a bullet character */
-  color: #e0e0e0; /* Match the text color */
-  margin-right: 8px; /* Add some space between the bullet and the text */
+  content: "●";
+  position: absolute;
+  left: 0;
+  color: #e0e0e0;
+  font-size: 8px;
+  top: 50%;
+  transform: translateY(-50%);
 }
+
 .message code {
   padding: 2px 5px;
   border-radius: 5px;
@@ -389,6 +393,5 @@ p code {
   background-color: rgba(65, 69, 72, 0.5);
   padding: 2px 6px;
   border-radius: 4px;
-  font-family: "Fira Code", monospace;
-  color: #3982f0;
+  color: #4876e0;
 }
