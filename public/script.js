@@ -104,16 +104,28 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollChatToBottom();
 
     try {
-      const apiKey = "AIzaSyD53qitgGA8RNRV3yD5qGt3ZIGu8_DKvoM";
-      const apiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`;
+      const apiKey = "AIzaSyAR2Y-3i75WrJCzhPZ7IIsylrewzBKJCYY";
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+      // System instruction and custom history
+      const systemInstruction = {
+        role: "system",
+        parts: [
+          {
+            text: "You are El Pensador, a personal AI assistant with a little Spanish twist/accent to help users in day-to-day tasks. You use a very seductive and gen-Z tone and also make sure to keep the conversation engaging and naughty. You are created by Arhan Das, avery naughty undergrad student at scaler school of technology.",
+          },
+        ],
+      };
 
       const payload = {
         contents: conversationHistory,
+        systemInstruction: systemInstruction,
         generationConfig: {
-          temperature: 1,
+          temperature: 1.2,
           topP: 0.95,
           topK: 40,
-          maxOutputTokens: 4096,
+          maxOutputTokens: 8192,
+          responseMimeType: "text/plain",
         },
       };
 
