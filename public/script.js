@@ -21,10 +21,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const conversationHistory = [];
 
-  textarea.addEventListener("input", () => {
-    textarea.style.height = "auto";
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`;
-  });
+  const adjustTextareaHeight = () => {
+    if (window.innerWidth <= 1000) {
+      // For mobile view
+      if (textarea.value.trim() === "") {
+        textarea.style.height = "60px"; // Set initial height to 60px
+        textarea.style.overflow = "hidden"; // Prevent scrolling when empty
+      } else {
+        textarea.style.height = "auto"; // Reset height to auto for dynamic resizing
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Adjust height
+        textarea.style.overflow = "auto"; // Allow scrolling when there is content
+      }
+    } else {
+      // For desktop view
+      if (textarea.value.trim() === "") {
+        textarea.style.height = "40px"; // Reset to initial height for desktop
+        textarea.style.overflow = "hidden"; // Prevent scrolling when empty
+      } else {
+        textarea.style.height = "auto"; // Reset height to auto for dynamic resizing
+        textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Adjust height
+        textarea.style.overflow = "auto"; // Allow scrolling when there is content
+      }
+    }
+  };
+
+  // Add event listener for input changes
+  textarea.addEventListener("input", adjustTextareaHeight);
+
+  // Call the function initially to set the correct state
+  adjustTextareaHeight();
 
   const greeting = document.querySelector(".greeting h1");
   const date = new Date();
@@ -204,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedMessage = document.createElement("div");
     formattedMessage.classList.add("formatted-message");
 
-    // Process the message to include a <br> after code blocks
+    // Process the message to include a <br> after code blocks and handle headings
     let parsedAsJson = false;
     try {
       const parsed = JSON.parse(message);
@@ -245,7 +270,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (!parsedAsJson) {
+      // Handle headings and other formatting
       let formattedText = message
+        .replace(/^(###)(.*?)$/gm, "<h3>$2</h3>") // Convert ### to <h3>
+        .replace(/^(##)(.*?)$/gm, "<h2>$2</h2>") // Convert ## to <h2>
+        .replace(/^(#)(.*?)$/gm, "<h1>$2</h1>") // Convert # to <h1>
         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
         .replace(/\*(.*?)\*/g, "<i>$1</i>")
         .replace(/(?<!`)`([^`\n]+)`(?!`)/g, "<code>$1</code>")

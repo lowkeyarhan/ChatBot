@@ -197,7 +197,7 @@ body {
 .txtarea {
   display: flex;
   align-items: center;
-  border-radius: 20px;
+  border-radius: 25px;
   padding: 8px 20px;
   gap: 10px;
   height: auto;
@@ -226,24 +226,18 @@ body {
   padding: 10px;
   border-radius: 10px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .txtarea textarea::placeholder {
   font-family: "Poppins", serif;
   font-size: 15px;
-  line-height: 1.2;
-  /* background-image: linear-gradient(
-    to right,
-    #ffffffcf,
-    rgba(63, 63, 63, 0.854),
-    #696969a1
-  );
-  background-clip: text;
-  -webkit-text-fill-color: transparent; */
+  line-height: 1.5;
 }
 
 .txtarea textarea:focus {
   outline: none;
+  padding: 10px;
 }
 
 .txtarea .btns i {
@@ -452,5 +446,59 @@ p code {
   }
   100% {
     text-shadow: 0 0 5px rgba(255, 75, 75, 0.5);
+  }
+}
+
+@media (max-width: 1000px) {
+  .sidebar {
+    display: none;
+  }
+  .main {
+    min-height: 100vh;
+  }
+  .greeting {
+    font-size: 30px;
+    padding: 30px;
+    margin-bottom: 20px;
+  }
+  .chat_container {
+    width: 90%;
+  }
+  .message {
+    border-radius: 25px;
+    max-width: 80%;
+    padding: 20px;
+  }
+  .message .user {
+    border-radius: 40px;
+    width: 50%;
+  }
+  .code-block pre p {
+    font-size: 20px;
+  }
+  .code-block pre code {
+    font-size: 20px;
+  }
+  .copy-btn {
+    font-size: 20px;
+    padding: 10px;
+  }
+  .language-label {
+    font-size: 20px;
+    top: 15px;
+  }
+  .code-block pre {
+    margin-top: 60px;
+  }
+  .txtarea {
+    width: 90%;
+    border-radius: 100px;
+  }
+  .txtarea textarea {
+    font-size: 15px;
+    height: 60px;
+  }
+  .txtarea textarea::placeholder {
+    font-size: 20px;
   }
 }
