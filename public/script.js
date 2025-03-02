@@ -192,6 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedMessage = document.createElement("div");
     formattedMessage.classList.add("formatted-message");
 
+    // Process the message to include a <br> after code blocks
     let parsedAsJson = false;
     try {
       const parsed = JSON.parse(message);
@@ -200,12 +201,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let htmlContent = "";
         parsed.blocks.forEach((block, index, array) => {
           if (block.type === "text") {
-            htmlContent += `<p>${escapeHtml(block.content)
-              .replace(/\n/g, "<br>")
-              .replace(
-                /^\* /gm,
-                sender === "bot" ? "&#9679; " : "&#8226; "
-              )}</p>`;
+            htmlContent += `<p>${escapeHtml(block.content).replace(
+              /\n/g,
+              "<br>"
+            )}</p>`;
             if (sender === "bot" && index !== array.length - 1) {
               htmlContent += "<br>";
             }
@@ -217,7 +216,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                 <span class="language-label">${language}</span>
                 <pre><code class="language-${language}">${safeCode}</code></pre>
-              </div>`;
+              </div>
+              <br>`; // Add <br> after code block
           } else if (block.type === "image") {
             htmlContent += `<img src="${block.url}" alt="${escapeHtml(
               block.alt || ""
@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
           /```(\w+)?\n?([\s\S]*?)```/g,
           (match, language = "plaintext", code) => {
             const safeCode = sender === "user" ? code : escapeHtml(code);
-            return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div>`;
+            return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div><br>`; // Add <br> after code block
           }
         );
 
