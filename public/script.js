@@ -21,36 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const conversationHistory = [];
 
-  const adjustTextareaHeight = () => {
-    if (window.innerWidth <= 1000) {
-      // For mobile view
-      if (textarea.value.trim() === "") {
-        textarea.style.height = "60px"; // Set initial height to 60px
-        textarea.style.overflow = "hidden"; // Prevent scrolling when empty
-      } else {
-        textarea.style.height = "auto"; // Reset height to auto for dynamic resizing
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Adjust height
-        textarea.style.overflow = "auto"; // Allow scrolling when there is content
-      }
-    } else {
-      // For desktop view
-      if (textarea.value.trim() === "") {
-        textarea.style.height = "40px"; // Reset to initial height for desktop
-        textarea.style.overflow = "hidden"; // Prevent scrolling when empty
-      } else {
-        textarea.style.height = "auto"; // Reset height to auto for dynamic resizing
-        textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Adjust height
-        textarea.style.overflow = "auto"; // Allow scrolling when there is content
-      }
-    }
-  };
-
-  // Add event listener for input changes
-  textarea.addEventListener("input", adjustTextareaHeight);
-
-  // Call the function initially to set the correct state
-  adjustTextareaHeight();
-
   const greeting = document.querySelector(".greeting h1");
   const date = new Date();
   const hours = date.getHours();
@@ -66,6 +36,27 @@ document.addEventListener("DOMContentLoaded", () => {
     greetingMessage = "Buenas noches, Maestro!";
   }
   greeting.textContent = greetingMessage;
+
+  // Function to adjust the height of the textarea
+  const adjustTextareaHeight = () => {
+    // Set initial height based on viewport width
+    if (window.innerWidth <= 1000) {
+      textarea.style.height = "80px"; // Set initial height to 80px for mobile
+    } else {
+      textarea.style.height = "40px"; // Set initial height to 40px for desktop
+    }
+    // textarea.style.overflow = "hidden"; // Prevent scrolling
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Adjust height dynamically, max 150px
+  };
+
+  // Add event listener for input changes
+  textarea.addEventListener("input", adjustTextareaHeight);
+
+  // Call the function initially to set the correct state
+  adjustTextareaHeight();
+
+  // Add event listener for window resize to adjust textarea height
+  window.addEventListener("resize", adjustTextareaHeight);
 
   function scrollChatToBottom() {
     chatBox.scrollTo({
@@ -117,7 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     textarea.value = "";
-    textarea.style.height = "30px";
 
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
