@@ -89,8 +89,8 @@ body {
   background-color: transparent;
   width: 70%;
   min-height: 60vh;
-  margin: 20px auto;
-  padding: 20px;
+  margin: 20px auto 0px auto;
+  padding: 20px 20px 0 20px;
   border-radius: 10px;
   overflow-y: auto;
   display: flex;
@@ -113,7 +113,7 @@ body {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px;
+  padding: 10px 10px 0px 10px;
   box-sizing: border-box;
 }
 
@@ -531,7 +531,7 @@ p code {
     border-radius: 50px;
   }
   .message.bot {
-    width: 80%;
+    width: 90%;
   }
 
   .typewriter {
