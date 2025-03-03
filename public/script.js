@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function playMessageSentSound() {
     try {
-      const audio = new Audio("/public/sounds/message-sent.mp3");
+      const audio = new Audio("/sounds/message-sent.mp3");
       audio.volume = 0.5;
       audio.play().catch((error) => {
         console.log("Error playing sent sound:", error);
@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function playMessageReceivedSound() {
     try {
-      const audio = new Audio("/public/sounds/message-recieved.mp3");
+      const audio = new Audio("/sounds/message-recieved.mp3");
       audio.volume = 1;
       audio.play().catch((error) => {
         console.log("Error playing received sound:", error);
