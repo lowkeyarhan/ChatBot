@@ -460,10 +460,10 @@ p code {
     height: 100vh;
   }
   .greeting {
-    padding: 35px;
+    padding: 40px;
   }
   .greeting h1 {
-    font-size: 60px;
+    font-size: 65px;
   }
 
   .txtarea {
