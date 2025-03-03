@@ -191,7 +191,7 @@ body {
   padding: 15px;
   z-index: 10;
   backdrop-filter: blur(15px);
-  background-color: rgb(20, 22, 28, 0.6);
+  background-color: rgba(20, 22, 28, 0.41);
 }
 
 .txtarea {
@@ -465,7 +465,6 @@ p code {
   .greeting h1 {
     font-size: 65px;
   }
-
   .txtarea {
     width: 95%;
     border-radius: 40px;
