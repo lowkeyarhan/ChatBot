@@ -384,87 +384,99 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.removeChild(tempTextarea);
   }
 
-  // Initialize Web Speech API
-  if ("webkitSpeechRecognition" in window) {
-    recognition = new webkitSpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = "en-US";
-  }
-
-  // Audio visualization setup
-  function setupAudioVisualization() {
-    canvas.width = 150;
-    canvas.height = 150;
-
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
-        const audioContext = new (window.AudioContext ||
-          window.webkitAudioContext)();
-        const source = audioContext.createMediaStreamSource(stream);
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 128;
-        analyser.smoothingTimeConstant = 0.5;
-        source.connect(analyser);
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-        window.audioStream = stream;
-        animationId = requestAnimationFrame(drawVisualizer);
-      })
-      .catch((err) => {
-        console.error("Error accessing microphone:", err);
-        stopRecording();
-      });
-  }
-
-  // Draw the audio visualizer
-  function drawVisualizer() {
-    if (!analyser || !isRecording) return;
-
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
-    const centerX = WIDTH / 2;
-    const centerY = HEIGHT / 2;
-
-    // Clear canvas
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
-    // Get audio data
-    analyser.getByteFrequencyData(dataArray);
-
-    // Calculate average amplitude
-    const averageAmplitude =
-      Array.from(dataArray).reduce((a, b) => a + b, 0) / dataArray.length / 255;
-
-    // Draw background
-    ctx.fillStyle = "rgba(0, 0, 20, 0.8)";
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    // Draw vertical bars
-    const barCount = 32; // Number of bars
-    const barWidth = WIDTH / barCount - 2; // Width of each bar
-    const maxBarHeight = HEIGHT * 0.8; // Maximum height of bars
-
-    for (let i = 0; i < barCount; i++) {
-      const amplitude = dataArray[i] / 255.0; // Normalize amplitude
-      const barHeight = amplitude * maxBarHeight; // Calculate height based on amplitude
-
-      const x = i * (barWidth + 2); // X position of the bar
-      const y = centerY - barHeight / 2; // Center the bar vertically
-
-      // Create gradient for each bar
-      const gradient = ctx.createLinearGradient(x, 0, x, HEIGHT);
-      gradient.addColorStop(0, `rgba(0, 255, 255, ${amplitude})`);
-      gradient.addColorStop(1, `rgba(0, 150, 255, ${amplitude * 0.5})`);
-
-      ctx.fillStyle = gradient;
-      ctx.fillRect(x, y, barWidth, barHeight); // Draw the bar
+  // Replace Azure speech config with Web Speech API and Google fallback
+  function initializeSpeechRecognition() {
+    if (!("webkitSpeechRecognition" in window)) {
+      return null;
     }
 
-    // Continue animation
-    if (isRecording) {
-      requestAnimationFrame(drawVisualizer);
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false; // Changed to false to prevent network errors
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+    recognition.maxAlternatives = 1;
+
+    return recognition;
+  }
+
+  function startRecording() {
+    recognition = initializeSpeechRecognition();
+
+    if (!recognition) {
+      alert(
+        "Speech recognition is not supported in your browser. Please use Chrome."
+      );
+      return;
+    }
+
+    try {
+      isRecording = true;
+      micBtn.parentElement.classList.add("recording");
+      textarea.value = "";
+
+      recognition.onstart = () => {
+        console.log("Speech recognition started");
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0].transcript)
+          .join("");
+
+        textarea.value = transcript;
+        textarea.dispatchEvent(new Event("input"));
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Recognition error:", event.error);
+        switch (event.error) {
+          case "network":
+            // Retry after a short delay
+            setTimeout(() => {
+              if (isRecording) {
+                recognition.start();
+              }
+            }, 1000);
+            break;
+          case "not-allowed":
+          case "service-not-allowed":
+            alert("Please allow microphone access to use speech recognition.");
+            stopRecording();
+            break;
+          default:
+            // For other errors, just restart if still recording
+            if (isRecording) {
+              recognition.start();
+            }
+        }
+      };
+
+      recognition.onend = () => {
+        // Restart recognition if still recording
+        if (isRecording) {
+          try {
+            recognition.start();
+          } catch (e) {
+            console.error("Error restarting recognition:", e);
+          }
+        }
+      };
+
+      recognition.start();
+    } catch (error) {
+      console.error("Error starting recognition:", error);
+      stopRecording();
+      alert("Failed to start speech recognition. Please try again.");
+    }
+  }
+
+  function stopRecording() {
+    isRecording = false;
+    micBtn.parentElement.classList.remove("recording");
+
+    if (recognition) {
+      recognition.stop();
+      recognition = null;
     }
   }
 
@@ -476,87 +488,6 @@ document.addEventListener("DOMContentLoaded", () => {
       stopRecording();
     }
   });
-
-  function startRecording() {
-    if (!recognition) {
-      alert("Speech recognition is not supported in your browser");
-      return;
-    }
-
-    isRecording = true;
-    micBtn.parentElement.classList.add("recording");
-    visualizerContainer.style.display = "block";
-
-    // Clear previous text
-    textarea.value = "";
-
-    // Setup speech recognition first
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    recognition.onresult = (event) => {
-      let finalTranscript = "";
-      let interimTranscript = "";
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalTranscript += transcript;
-        } else {
-          interimTranscript += transcript;
-        }
-      }
-
-      textarea.value = finalTranscript + interimTranscript;
-      textarea.dispatchEvent(new Event("input"));
-    };
-
-    recognition.onend = () => {
-      if (isRecording) {
-        recognition.start();
-      }
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-      if (event.error === "not-allowed") {
-        stopRecording();
-      }
-    };
-
-    // Start both speech recognition and audio visualization
-    recognition.start();
-    setupAudioVisualization();
-  }
-
-  function stopRecording() {
-    isRecording = false;
-    micBtn.parentElement.classList.remove("recording");
-    visualizerContainer.style.display = "none";
-
-    // Stop speech recognition
-    if (recognition) {
-      recognition.stop();
-    }
-
-    // Stop animation
-    if (animationId) {
-      cancelAnimationFrame(animationId);
-      animationId = null;
-    }
-
-    // Cleanup audio context
-    if (analyser) {
-      analyser.disconnect();
-      analyser = null;
-    }
-
-    // Stop all audio tracks
-    if (window.audioStream) {
-      window.audioStream.getTracks().forEach((track) => track.stop());
-      window.audioStream = null;
-    }
-  }
 
   // Clean up on page unload
   window.addEventListener("beforeunload", () => {
