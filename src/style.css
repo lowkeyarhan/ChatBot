@@ -484,7 +484,9 @@ p code {
   p {
     font-size: 25px; /* Ensure all <p> elements have a font size of 25px */
   }
-
+  b {
+    font-size: 30px;
+  }
   .chat_container {
     width: 90%;
   }

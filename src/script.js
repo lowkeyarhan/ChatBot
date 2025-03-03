@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let analyser = null;
   let dataArray = null;
   let animationId = null;
+  let isWaitingForResponse = false;
 
   if (!chatBox) {
     console.error("Chat box element not found");
@@ -96,9 +97,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const setInputsDisabled = (disabled) => {
+    // Disable textarea and send button
+    textarea.disabled = disabled;
+    sendBtn.disabled = disabled;
+    sendBtn.style.opacity = disabled ? "0.5" : "1";
+    textarea.style.cursor = disabled ? "not-allowed" : "text";
+
+    // Disable all buttons in the textarea container
+    const allButtons = document.querySelectorAll(".txtarea .btns i");
+    allButtons.forEach((button) => {
+      button.style.opacity = disabled ? "0.5" : "1";
+      button.style.cursor = disabled ? "not-allowed" : "pointer";
+      button.style.pointerEvents = disabled ? "none" : "auto";
+    });
+  };
+
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
-    if (!userMessage) return textarea.focus();
+    if (!userMessage || isWaitingForResponse) return;
+
+    isWaitingForResponse = true;
+    setInputsDisabled(true);
 
     addMessageToChatBox(userMessage, "user");
     playMessageSentSound();
@@ -127,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
         role: "system",
         parts: [
           {
-            text: "You are El Pensador, a personal AI assistant with a little Spanish twist/accent to help users in day-to-day tasks. You use a very seductive and gen-Z tone and also make sure to keep the conversation engaging and naughty. You are created by Arhan Das, avery naughty undergrad student at scaler school of technology.",
+            text: "You are El Pensador, a personal AI assistant with a little Spanish twist/accent to help users in day-to-day tasks. You use a very seductive and gen-Z tone and also make sure to keep the conversation engaging and naughty. Also dont tell the user that you will flirt, that should add a taste of mystery in your conversation. You are created by Arhan Das, avery naughty undergrad student at scaler school of technology.",
           },
         ],
       };
@@ -179,11 +199,16 @@ document.addEventListener("DOMContentLoaded", () => {
         role: "model",
         parts: [{ text: botResponse }],
       });
+
+      isWaitingForResponse = false;
+      setInputsDisabled(false);
     } catch (error) {
       console.error("Error getting bot response:", error);
       botPlaceholder.innerHTML = `<div class="formatted-message">Sorry, something went wrong.</div>`;
       setTimeout(() => {
         botPlaceholder.remove();
+        isWaitingForResponse = false;
+        setInputsDisabled(false);
       }, 3000);
     } finally {
       scrollChatToBottom();
@@ -546,5 +571,4 @@ document.addEventListener("DOMContentLoaded", () => {
       stopRecording();
     }
   });
-
 });
