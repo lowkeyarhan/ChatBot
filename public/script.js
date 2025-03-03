@@ -186,14 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const tempDiv = document.createElement("div");
       addMessageToChatBox(botResponse, "bot", tempDiv);
 
-      const messageElement = document.createElement("div");
-      messageElement.classList.add("message", "bot");
-      const formattedMessage = document.createElement("div");
-      formattedMessage.classList.add("formatted-message");
-      messageElement.appendChild(formattedMessage);
-      chatBox.appendChild(messageElement);
-
-      typeMessage(formattedMessage, tempDiv.innerHTML);
       playMessageReceivedSound();
 
       conversationHistory.push({

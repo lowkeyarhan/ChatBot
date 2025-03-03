@@ -41,6 +41,25 @@
         svg: {
           fontCache: "global",
         },
+        chtml: {
+          scale: 1,
+          matchFontHeight: false,
+          minScale: 1,
+          maxScale: 1,
+          adaptiveCSS: false,
+        },
+        options: {
+          enableMenu: false,
+          processHtmlClass: "math",
+          skipHtmlTags: ["p", "pre", "code"],
+        },
+        startup: {
+          pageReady: () => {
+            document.querySelectorAll(".MathJax, .MathJax *").forEach((el) => {
+              el.style.fontSize = "inherit";
+            });
+          },
+        },
       };
     </script>
     <script
@@ -52,6 +71,16 @@
       href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        katex.defaultOptions = {
+          ...katex.defaultOptions,
+          fontSize: "1em",
+          minRuleThickness: 0.05,
+          strict: false,
+        };
+      });
+    </script>
   </head>
   <body>
     <div class="sidebar">

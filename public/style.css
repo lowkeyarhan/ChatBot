@@ -147,7 +147,9 @@ body {
   border-style: none;
   animation: receiveMessage 0.5s ease-out;
 }
-
+.message.bot p {
+  font-family: "Poppins", serif;
+}
 .message p {
   margin: 0;
   font-size: 14px;
@@ -303,6 +305,9 @@ body {
   font-size: 12px;
   font-family: "Poppins", sans-serif;
 }
+pre code p {
+  font-family: "Fira Code", monospace;
+}
 
 .code-block pre {
   margin: 0px;
@@ -314,6 +319,7 @@ body {
   background-color: rgb(24, 24, 55);
   border: none;
   color: #ffffff;
+  font-family: "Fira Code", monospace;
 }
 
 .code-block pre code {
@@ -465,6 +471,9 @@ p code {
   .greeting h1 {
     font-size: 65px;
   }
+  #userchat {
+    gap: 2.5rem;
+  }
   .txtarea {
     width: 95%;
     border-radius: 40px;
@@ -493,7 +502,7 @@ p code {
 
   .txtarea textarea {
     height: 80px; /* Set initial height to 80px for mobile */
-    font-size: 15px;
+    font-size: 15px !important;
     padding: 10px 10px 10px 10px;
   }
   .txtarea textarea::placeholder {
@@ -513,43 +522,62 @@ p code {
   }
   /* Set font size for all <p> elements to 25px */
   p {
-    font-size: 25px; /* Ensure all <p> elements have a font size of 25px */
+    font-size: 25px !important; /* Ensure all <p> elements have a font size of 25px */
   }
 
   b {
-    font-size: 30px;
+    font-size: 30px !important;
   }
 
   .chat_container {
     width: 90%;
   }
   .formatted-message p {
-    font-size: 25px; /* Ensure formatted messages also have a font size of 25px */
+    font-size: 25px !important; /* Ensure formatted messages also have a font size of 25px */
   }
 
   .message.user {
     border-radius: 50px;
   }
-  .message.bot {
-    width: 90%;
+  .message {
+    max-width: 80%;
   }
 
   .typewriter {
-    font-size: 35px;
+    font-size: 35px !important;
   }
 
   .code-block pre {
-    font-size: 20px;
+    font-size: 20px !important;
     margin-top: 65px;
   }
   .language-label {
-    font-size: 20px;
+    font-size: 20px !important;
     top: 15px;
   }
   .copy-btn {
-    font-size: 25px;
+    font-size: 25px !important;
     padding: 10px;
     border-radius: 10px;
+  }
+
+  /* Override MathJax sizes specifically for mobile */
+  .MathJax,
+  .MathJax_Display,
+  .MathJax * {
+    font-size: 25px !important;
+  }
+
+  p {
+    font-size: 25px !important;
+  }
+
+  .code-block pre,
+  .code-block pre code,
+  .code-block pre p,
+  .code-block code p {
+    font-family: "Fira Code", monospace !important;
+    font-size: 20px !important;
   }
 }
 
@@ -557,4 +585,98 @@ p code {
   .txtarea textarea {
     height: 40px; /* Set initial height to 40px for desktop */
   }
+}
+
+/* Remove previous MathJax styles and add these more specific ones */
+.MathJax,
+.MathJax_Display,
+.MathJax * {
+  font-size: 14px !important;
+  display: inline-block !important;
+}
+
+/* Keep paragraph font size independent */
+p .MathJax,
+p .MathJax_Display {
+  font-size: 14px !important;
+}
+
+.MathJax,
+.MathJax * {
+  font-size: inherit !important;
+}
+
+/* Add these new styles right after the media queries */
+/* Isolate math rendering from regular text */
+.math {
+  display: inline-block !important;
+  font-size: inherit !important;
+}
+
+/* Override KaTeX and MathJax styles */
+.katex,
+.katex *,
+.katex-display,
+.MathJax,
+.MathJax *,
+.MJX-TEX {
+  font-size: inherit !important;
+}
+
+/* Force paragraph styles */
+p {
+  font-size: 14px !important;
+}
+
+p.math,
+p .math,
+p .katex,
+p .MathJax {
+  font-size: inherit !important;
+}
+
+@media (max-width: 1000px) {
+  /* Mobile overrides */
+  .message p {
+    font-size: 25px !important;
+  }
+
+  .math,
+  .katex,
+  .MathJax {
+    font-size: 25px !important;
+  }
+}
+
+/* Force styles for math elements to not affect paragraph */
+.message p .MathJax,
+.message p .katex,
+.message p .math,
+.message p mjx-container {
+  display: inline-block !important;
+  font-size: 14px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Reset any inherited styles */
+.MathJax_Display,
+.katex-display,
+mjx-container[jax="CHTML"][display="true"] {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+}
+
+/* Update code block styles */
+.code-block pre,
+.code-block pre code,
+.code-block pre p,
+.code-block code p {
+  font-family: "Fira Code", monospace !important;
+}
+
+/* Keep regular message p tags with Poppins */
+.message p {
+  font-family: "Poppins", sans-serif !important;
 }
