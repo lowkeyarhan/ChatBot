@@ -467,17 +467,16 @@ p code {
   }
 
   .txtarea {
-    width: 90%;
+    width: 95%;
     border-radius: 40px;
     flex-direction: column;
-    padding: 10px;
+    padding: 20px;
   }
 
   .txtarea .btns {
     display: flex;
     justify-content: space-between;
-    width: 90%;
-    padding-bottom: 20px;
+    width: 100%;
   }
 
   /* Update the send button specifically */
@@ -493,7 +492,7 @@ p code {
   .txtarea textarea {
     height: 80px; /* Set initial height to 80px for mobile */
     font-size: 20px;
-    padding: 10px 10px 10px 20px;
+    padding: 10px 10px 10px 10px;
   }
   .txtarea textarea::placeholder {
     font-size: 25px;
