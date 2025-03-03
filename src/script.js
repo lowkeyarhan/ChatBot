@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.getElementById("send-btn");
   const chatBox = document.getElementById("userchat");
   const micBtn = document.getElementById("microphone-btn");
+  const fileBtn = document.getElementById("file-btn");
   const visualizerContainer = document.getElementById(
     "audio-visualizer-container"
   );
@@ -571,4 +572,24 @@ document.addEventListener("DOMContentLoaded", () => {
       stopRecording();
     }
   });
+
+  // Modify the updateButtonText function
+  const updateButtonText = () => {
+    const filesBtn = document.querySelector("#files");
+    const microphoneBtn = document.querySelector("#microphone-btn");
+    
+    if (window.innerWidth <= 1000) {
+      filesBtn.innerHTML = '<i class="fa-solid fa-paperclip"></i> Files';
+      microphoneBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i> Audio';
+    } else {
+      filesBtn.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
+      microphoneBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
+    }
+  };
+
+  // Call it initially
+  updateButtonText();
+
+  // Add resize listener
+  window.addEventListener("resize", updateButtonText);
 });
