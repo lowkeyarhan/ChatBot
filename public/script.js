@@ -345,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.copyCode = function (button) {
-    const codeElement = button.parentElement.querySelector("pre code");
+    const codeElement = button.parentElement.querySelector("pre");
     if (!codeElement) return;
 
     const codeText = codeElement.innerText; // Use innerText to preserve line breaks
