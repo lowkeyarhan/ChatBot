@@ -129,6 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     textarea.value = "";
+    // Reset textarea height immediately after clearing
+    if (window.innerWidth <= 1000) {
+      textarea.style.height = "80px"; // Mobile height
+    } else {
+      textarea.style.height = "40px"; // Desktop height
+    }
 
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
