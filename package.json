@@ -1,1 +1,21 @@
-
+{
+  "name": "el-pensador",
+  "version": "1.0.0",
+  "description": "AI chatbot with Gemini",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "vercel-build": "echo 'Build step complete'"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
