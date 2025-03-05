@@ -348,7 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const codeElement = button.parentElement.querySelector("pre code");
     if (!codeElement) return;
 
-    const codeText = codeElement.textContent;
+    const codeText = codeElement.innerText; // Use innerText to preserve line breaks
 
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard
