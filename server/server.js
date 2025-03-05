@@ -10,8 +10,11 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Security middleware
+// Security middleware with CORS for Vercel
 app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");
@@ -23,31 +26,24 @@ app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json());
 
 // Endpoint to get API key with rate limiting
-let requestCount = 0;
-const resetTime = Date.now();
-
 app.get("/api/config", (req, res) => {
-  // Basic rate limiting
-  const now = Date.now();
-  if (now - resetTime > 3600000) {
-    // Reset counter every hour
-    requestCount = 0;
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    console.error("API key not found in environment");
+    return res.status(500).json({ 
+      error: "Server configuration error",
+      details: "API key not configured" 
+    });
   }
 
-  if (requestCount > 100) {
-    // Limit requests per hour
-    return res.status(429).json({ error: "Too many requests" });
-  }
+  res.json({ apiKey });
+});
 
-  requestCount++;
-
-  if (!process.env.GEMINI_API_KEY) {
-    return res.status(500).json({ error: "API key not found" });
-  }
-
-  res.json({
-    apiKey: process.env.GEMINI_API_KEY,
-  });
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Internal server error" });
 });
 
 // Handle Vercel serverless environment

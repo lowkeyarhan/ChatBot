@@ -119,16 +119,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const response = await fetch('/api/config');
       if (!response.ok) {
-        throw new Error('Failed to fetch API key');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch API key');
       }
       const data = await response.json();
       if (!data.apiKey) {
-        throw new Error('API key not found');
+        throw new Error('API key not found in response');
       }
       return data.apiKey;
     } catch (error) {
       console.error('Error fetching API key:', error);
-      alert('Failed to initialize chat. Please refresh the page.');
+      alert(`Failed to initialize chat: ${error.message}. Please try again later.`);
       throw error;
     }
   }
