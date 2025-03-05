@@ -114,43 +114,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
-  // Move API key fetch to a separate function
-  async function getApiKey() {
-    try {
-      const response = await fetch('/api/config');
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch API key');
-      }
-      const data = await response.json();
-      if (!data.apiKey) {
-        throw new Error('API key not found in response');
-      }
-      return data.apiKey;
-    } catch (error) {
-      console.error('Error fetching API key:', error);
-      alert(`Failed to initialize chat: ${error.message}. Please try again later.`);
-      throw error;
-    }
-  }
-
-  // Initialize API key at startup
-  let apiKey;
-  try {
-    apiKey = await getApiKey();
-  } catch (error) {
-    return; // Stop initialization if API key fetch fails
-  }
-
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
     if (!userMessage || isWaitingForResponse) return;
-
-    // Verify API key before sending
-    if (!apiKey) {
-      alert('Chat is not properly initialized. Please refresh the page.');
-      return;
-    }
 
     isWaitingForResponse = true;
     setInputsDisabled(true);
@@ -180,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     scrollChatToBottom();
 
     try {
+      const apiKey = "AIzaSyAR2Y-3i75WrJCzhPZ7IIsylrewzBKJCYY"; // Direct API key usage
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
       // System instruction and custom history
