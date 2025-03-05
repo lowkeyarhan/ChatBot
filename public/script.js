@@ -231,8 +231,10 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-    // Remove the line that escapes apostrophes
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;") // Added escaping for single quotes
+      .replace(/&lt;i&gt;/g, "") // Replace <i> with *
+      .replace(/&lt;\/i&gt;/g, "*"); // Replace </i> with *
   }
 
   //adding messages to chat box
