@@ -136,7 +136,7 @@ body {
   color: rgba(204, 224, 252);
   margin-left: auto;
   animation: sendMessage 0.5s ease-out;
-  border-radius: 20px;
+  border-radius: 20px 20px 0px 20px;
 }
 
 .message.bot {
@@ -436,7 +436,7 @@ p code {
 }
 
 .recording #microphone-btn {
-  animation: pulse-border 3s infinite; /* Apply the pulsing animation */
+  animation: pulse-border 3s infinite ease-in-out; /* Apply the pulsing animation */
 }
 
 .recording .attachments span {
@@ -444,27 +444,21 @@ p code {
   box-shadow: 0 0 15px rgba(79, 184, 255, 0.5);
 }
 
-/* Add pulse border effect */
-@keyframes border-pulse {
-  0% {
-    border-color: rgba(16, 127, 255, 0.5);
-    box-shadow: 0 0 5px rgba(10, 120, 255, 0.3);
-  }
-  50% {
-    border-color: rgb(247, 21, 21);
-    box-shadow: 0 0 20px rgba(21, 68, 255, 0.8);
-  }
-  100% {
-    border-color: rgba(36, 40, 235, 0.5);
-    box-shadow: 0 0 5px rgba(95, 27, 255, 0.3);
-  }
+.recording .attachments span {
+  animation: border-pulse 5s infinite;
 }
 
-.recording .attachments span {
-  animation: border-pulse 3s infinite;
+/* Add styles for image upload */
+.chat-image {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
 }
 
 @media (max-width: 1000px) {
+  .chat-image {
+    border-radius: 0px;
+  }
   .sidebar {
     display: none;
   }
@@ -479,6 +473,7 @@ p code {
   }
   #userchat {
     gap: 2.5rem;
+    padding: 0px;
   }
   .txtarea {
     width: 95%;
@@ -512,7 +507,7 @@ p code {
 
   .txtarea textarea {
     height: 80px; /* Set initial height to 80px for mobile */
-    font-size: 15px !important;
+    font-size: 14px !important;
     padding: 10px 10px 10px 10px;
   }
   .txtarea textarea::placeholder {
@@ -547,7 +542,8 @@ p code {
   }
 
   .message.user {
-    border-radius: 50px;
+    border-radius: 40px 40px 0px 40px;
+    padding: 20px 20px 20px 20px;
   }
   .message {
     max-width: 80%;
@@ -694,23 +690,63 @@ mjx-container[jax="CHTML"][display="true"] {
 /* Add a pulsing border effect with color transitions */
 @keyframes pulse-border {
   0% {
-    border-color: rgba(44, 153, 255, 0.4); /* Blue */
-    box-shadow: 0 0 15px rgba(44, 153, 255, 0.4);
+    border-color: rgba(63, 66, 255, 0.6); /* Blue */
+    box-shadow: 0 0 15px rgba(63, 66, 255, 0.6);
   }
   25% {
-    border-color: rgb(62, 91, 255); /* prussian blue */
-    box-shadow: 0 0 20px rgb(62, 91, 255);
+    border-color: rgba(60, 62, 165, 0.6); /* Blue */
+    box-shadow: 0 0 15px rgba(60, 62, 165, 0.6);
   }
   50% {
-    border-color: rgb(76, 52, 255); /* Violet */
-    box-shadow: 0 0 20px rgb(76, 52, 255);
+    border-color: rgba(91, 53, 145, 0.6); /* Blue */
+    box-shadow: 0 0 15px rgba(91, 53, 145, 0.6);
   }
   75% {
-    border-color: rgb(97, 35, 191); /* mauve */
-    box-shadow: 0 0 20px rgb(97, 35, 191);
+    border-color: rgba(167, 57, 140, 0.6); /* Blue */
+    box-shadow: 0 0 15px rgba(167, 57, 140, 0.6);
   }
   100% {
-    border-color: rgba(251, 28, 110, 0.4); /* scarlet */
-    box-shadow: 0 0 15px rgba(251, 28, 110, 0.4);
+    border-color: rgba(38, 29, 218, 0.6); /* Blue */
+    box-shadow: 0 0 15px rgba(38, 29, 218, 0.6);
   }
+}
+
+.image-uploading span #photo {
+  animation: pulse-border 3s infinite;
+}
+
+/* Add styles for image count */
+.image-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #292976;
+  color: white;
+  font-family: "Comfortaa", serif;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  animation: pulse-border 5s infinite;
+}
+
+/* Update for mobile */
+@media (max-width: 1000px) {
+  .image-count {
+    top: -12px;
+    right: -12px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
+
+/* Ensure photo button has relative positioning */
+#photo {
+  position: relative;
+  display: inline-block;
 }

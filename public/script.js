@@ -114,27 +114,121 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
+  // Add new variables for image handling
+  const photoBtn = document.querySelector("#photo");
+  let selectedImage = null;
+  let isUploading = false;
+
+  // Create hidden file input
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+  document.body.appendChild(fileInput);
+
+  // Handle image selection
+  photoBtn.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  // Add new variable for tracking image count
+  let imageCount = 0;
+  let selectedImages = [];
+
+  // Update image count display
+  function updateImageCount() {
+    const existingCount = photoBtn.querySelector(".image-count");
+    if (imageCount > 0) {
+      if (existingCount) {
+        existingCount.textContent = `+${imageCount}`;
+      } else {
+        const countElement = document.createElement("div");
+        countElement.className = "image-count";
+        countElement.textContent = `+${imageCount}`;
+        photoBtn.appendChild(countElement);
+      }
+    } else if (existingCount) {
+      existingCount.remove();
+    }
+  }
+
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      isUploading = true;
+      photoBtn.parentElement.classList.add("image-uploading");
+
+      try {
+        selectedImage = await convertImageToBase64(file);
+        selectedImages.push(selectedImage); // Store the image
+        imageCount++; // Increment count
+        updateImageCount(); // Update display
+        adjustTextareaHeight();
+      } catch (error) {
+        console.error("Error processing image:", error);
+        alert("Failed to process image. Please try again.");
+      } finally {
+        isUploading = false;
+        photoBtn.parentElement.classList.remove("image-uploading");
+      }
+    }
+  });
+
+  // Convert image to base64
+  function convertImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   const sendMessage = async () => {
     const userMessage = textarea.value.trim();
-    if (!userMessage || isWaitingForResponse) return;
+    if ((!userMessage && selectedImages.length === 0) || isWaitingForResponse)
+      return;
 
     isWaitingForResponse = true;
     setInputsDisabled(true);
 
-    addMessageToChatBox(userMessage, "user");
+    // Create message content
+    let messageContent = userMessage;
+    if (selectedImage) {
+      // Add image to chat
+      messageContent = {
+        text: userMessage,
+        image: selectedImage,
+      };
+    }
+
+    addMessageToChatBox(messageContent, "user");
     playMessageSentSound();
+
+    // Update conversation history
     conversationHistory.push({
       role: "user",
-      parts: [{ text: userMessage }],
+      parts: selectedImage
+        ? [
+            { text: userMessage || "" },
+            {
+              inlineData: {
+                mimeType: "image/jpeg",
+                data: selectedImage.split(",")[1],
+              },
+            },
+          ]
+        : [{ text: userMessage }],
     });
 
+    // Clear inputs and remove animation
     textarea.value = "";
-    // Reset textarea height immediately after clearing
-    if (window.innerWidth <= 1000) {
-      textarea.style.height = "80px"; // Mobile height
-    } else {
-      textarea.style.height = "40px"; // Desktop height
-    }
+    selectedImages = [];
+    imageCount = 0;
+    updateImageCount();
+    selectedImage = null;
+    photoBtn.parentElement.classList.remove("image-uploading"); // Remove animation class
+    adjustTextareaHeight();
 
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
@@ -245,91 +339,103 @@ document.addEventListener("DOMContentLoaded", async () => {
     const formattedMessage = document.createElement("div");
     formattedMessage.classList.add("formatted-message");
 
-    // Process the message to include a <br> after code blocks and handle headings
-    let parsedAsJson = false;
-    try {
-      const parsed = JSON.parse(message);
-      if (parsed && Array.isArray(parsed.blocks)) {
-        parsedAsJson = true;
-        let htmlContent = "";
-        parsed.blocks.forEach((block, index, array) => {
-          if (block.type === "text") {
-            htmlContent += `<p>${escapeHtml(block.content).replace(
-              /\n/g,
-              "<br>"
-            )}</p>`;
-            if (sender === "bot" && index !== array.length - 1) {
-              htmlContent += "<br>";
-            }
-          } else if (block.type === "code") {
-            const safeCode = escapeHtml(block.content);
-            const language = block.language || "plaintext";
-            htmlContent += `
-              <div class="code-block">
-                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                <span class="language-label">${language}</span>
-                <pre><code class="language-${language}">${safeCode}</code></pre>
-              </div>
-              <br>`; // Add <br> after code block
-          } else if (block.type === "image") {
-            htmlContent += `<img src="${block.url}" alt="${escapeHtml(
-              block.alt || ""
-            )}" />`;
-          } else {
-            htmlContent += `<p>${escapeHtml(block.content)}</p>`;
-          }
-        });
-        formattedMessage.innerHTML = htmlContent;
+    if (typeof message === "object" && message.image) {
+      // Handle message with image
+      if (message.text) {
+        formattedMessage.innerHTML += `<p>${escapeHtml(message.text)}</p>`;
       }
-    } catch (e) {
-      parsedAsJson = false;
-    }
-
-    if (!parsedAsJson) {
-      // Handle headings and other formatting
-      let formattedText = message
-        .replace(/^(###)(.*?)$/gm, "<h3>$2</h3>") // Convert ### to <h3>
-        .replace(/^(##)(.*?)$/gm, "<h2>$2</h2>") // Convert ## to <h2>
-        .replace(/^(#)(.*?)$/gm, "<h1>$2</h1>") // Convert # to <h1>
-        .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-        .replace(/\*(.*?)\*/g, "<i>$1</i>")
-        .replace(/(?<!`)`([^`\n]+)`(?!`)/g, "<code>$1</code>")
-        .replace(
-          /\$\\boxed\{(.*?)\}\$/g,
-          '<span class="math">\\boxed{$1}</span>'
-        )
-        .replace(
-          /```(\w+)?\n?([\s\S]*?)```/g,
-          (match, language = "plaintext", code) => {
-            const safeCode = sender === "user" ? code : escapeHtml(code);
-            return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div><br>`; // Add <br> after code block
-          }
-        );
-
-      const paragraphs = formattedText
-        .split(/\n{2,}/)
-        .map((para, index, array) => {
-          // Remove extra line breaks after <pre> blocks
-          if (para.includes("<pre>")) {
-            return `<p>${para
-              .replace(/\n/g, "<br>")
-              .replace(
-                /^\* /gm,
-                sender === "bot" ? "&#9679; " : "&#8226; "
+      const img = document.createElement("img");
+      img.src = message.image;
+      img.classList.add("chat-image");
+      formattedMessage.appendChild(img);
+    } else {
+      // Handle regular message
+      // Process the message to include a <br> after code blocks and handle headings
+      let parsedAsJson = false;
+      try {
+        const parsed = JSON.parse(message);
+        if (parsed && Array.isArray(parsed.blocks)) {
+          parsedAsJson = true;
+          let htmlContent = "";
+          parsed.blocks.forEach((block, index, array) => {
+            if (block.type === "text") {
+              htmlContent += `<p>${escapeHtml(block.content).replace(
+                /\n/g,
+                "<br>"
               )}</p>`;
-          } else {
-            return `<p>${para
-              .replace(/\n/g, "<br>")
-              .replace(
-                /^\* /gm,
-                sender === "bot" ? "&#9679; " : "&#8226; "
-              )}</p>${
-              sender === "bot" && index !== array.length - 1 ? "<br>" : ""
-            }`;
-          }
-        });
-      formattedText = paragraphs.join("");
-      formattedMessage.innerHTML = formattedText;
+              if (sender === "bot" && index !== array.length - 1) {
+                htmlContent += "<br>";
+              }
+            } else if (block.type === "code") {
+              const safeCode = escapeHtml(block.content);
+              const language = block.language || "plaintext";
+              htmlContent += `
+                <div class="code-block">
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  <span class="language-label">${language}</span>
+                  <pre><code class="language-${language}">${safeCode}</code></pre>
+                </div>
+                <br>`; // Add <br> after code block
+            } else if (block.type === "image") {
+              htmlContent += `<img src="${block.url}" alt="${escapeHtml(
+                block.alt || ""
+              )}" />`;
+            } else {
+              htmlContent += `<p>${escapeHtml(block.content)}</p>`;
+            }
+          });
+          formattedMessage.innerHTML = htmlContent;
+        }
+      } catch (e) {
+        parsedAsJson = false;
+      }
+
+      if (!parsedAsJson) {
+        // Handle headings and other formatting
+        let formattedText = message
+          .replace(/^(###)(.*?)$/gm, "<h3>$2</h3>") // Convert ### to <h3>
+          .replace(/^(##)(.*?)$/gm, "<h2>$2</h2>") // Convert ## to <h2>
+          .replace(/^(#)(.*?)$/gm, "<h1>$2</h1>") // Convert # to <h1>
+          .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+          .replace(/\*(.*?)\*/g, "<i>$1</i>")
+          .replace(/(?<!`)`([^`\n]+)`(?!`)/g, "<code>$1</code>")
+          .replace(
+            /\$\\boxed\{(.*?)\}\$/g,
+            '<span class="math">\\boxed{$1}</span>'
+          )
+          .replace(
+            /```(\w+)?\n?([\s\S]*?)```/g,
+            (match, language = "plaintext", code) => {
+              const safeCode = sender === "user" ? code : escapeHtml(code);
+              return `<div class="code-block"><span class="language-label">${language}</span><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code class="language-${language}">${safeCode}</code></pre></div><br>`; // Add <br> after code block
+            }
+          );
+
+        const paragraphs = formattedText
+          .split(/\n{2,}/)
+          .map((para, index, array) => {
+            // Remove extra line breaks after <pre> blocks
+            if (para.includes("<pre>")) {
+              return `<p>${para
+                .replace(/\n/g, "<br>")
+                .replace(
+                  /^\* /gm,
+                  sender === "bot" ? "&#9679; " : "&#8226; "
+                )}</p>`;
+            } else {
+              return `<p>${para
+                .replace(/\n/g, "<br>")
+                .replace(
+                  /^\* /gm,
+                  sender === "bot" ? "&#9679; " : "&#8226; "
+                )}</p>${
+                sender === "bot" && index !== array.length - 1 ? "<br>" : ""
+              }`;
+            }
+          });
+        formattedText = paragraphs.join("");
+        formattedMessage.innerHTML = formattedText;
+      }
     }
 
     messageElement.appendChild(formattedMessage);
@@ -510,6 +616,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const microphoneBtn = document.querySelector("#microphone-btn");
     const photoBtn = document.querySelector("#photo");
 
+    // Store the existing count element if it exists
+    const existingCount = photoBtn.querySelector(".image-count");
+    const currentCount = existingCount ? existingCount.textContent : "";
+
     if (window.innerWidth <= 1000) {
       filesBtn.innerHTML = '<i class="fa-solid fa-paperclip"></i> Files';
       microphoneBtn.innerHTML =
@@ -519,6 +629,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       filesBtn.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
       microphoneBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
       photoBtn.innerHTML = '<i class="fa-solid fa-camera"></i>';
+    }
+
+    // Restore the count if it existed
+    if (currentCount) {
+      const countElement = document.createElement("div");
+      countElement.className = "image-count";
+      countElement.textContent = currentCount;
+      photoBtn.appendChild(countElement);
     }
   };
 
