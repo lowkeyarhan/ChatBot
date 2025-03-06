@@ -328,6 +328,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     } finally {
       scrollChatToBottom();
     }
+
+    // Call checkContentHeight after adding a message
+    checkContentHeight();
   };
 
   sendBtn.addEventListener("click", () => {
@@ -465,6 +468,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     messageElement.appendChild(formattedMessage);
     chatBox.appendChild(messageElement);
+
+    // Call checkContentHeight after adding a message
+    setTimeout(checkContentHeight, 100);
 
     // Add this block to render math expressions
     document.querySelectorAll(".math").forEach((element) => {
@@ -670,4 +676,63 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Add resize listener
   window.addEventListener("resize", updateButtonText);
+
+  // Add these functions after the initial declarations
+  function checkContentHeight() {
+    const mainDiv = document.querySelector(".chat_container");
+    const scrollBtn = document.getElementById("scrollBtn");
+    const chatBox = document.getElementById("userchat");
+
+    // Use getComputedStyle to get the height of the main div
+    const mainDivHeight = mainDiv.scrollHeight;
+    const windowHeight = window.innerHeight;
+
+    console.log("Main div height (computed):", mainDivHeight);
+    console.log("Window height:", windowHeight);
+
+    // Check if the main div height exceeds the window height
+    const isMainDivOverflowing = mainDivHeight > windowHeight;
+
+    // Show button if the main div is overflowing
+    if (isMainDivOverflowing) {
+      console.log("Main div is overflowing. Showing scroll button.");
+      scrollBtn.style.display = "flex"; // Change display to flex
+    } else {
+      console.log("Main div is not overflowing. Hiding scroll button.");
+      scrollBtn.style.display = "none"; // Hide the button if not overflowing
+    }
+
+    // Calculate if we're near bottom (within 100px)
+    const isNearBottom =
+      chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 100;
+
+    // Show button if content is scrollable AND not at bottom
+    if (chatBox.scrollHeight > chatBox.clientHeight && !isNearBottom) {
+      scrollBtn.classList.add("visible");
+    } else {
+      scrollBtn.classList.remove("visible");
+    }
+  }
+
+  // Call this function on page load
+  window.addEventListener("load", checkContentHeight);
+
+  // Add scroll handler for chat container with throttling
+  let scrollTimeout;
+  chatBox.addEventListener("scroll", () => {
+    if (!scrollTimeout) {
+      scrollTimeout = setTimeout(() => {
+        checkContentHeight();
+        scrollTimeout = null;
+      }, 100);
+    }
+  });
+
+  // Add scroll-to-bottom functionality
+  document.getElementById("scrollBtn").addEventListener("click", () => {
+    chatBox.scrollTo({
+      top: chatBox.scrollHeight,
+      behavior: "smooth",
+    });
+  });
 });

@@ -56,8 +56,9 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
+  min-height: 100vh;
 }
 
 .greeting {
@@ -554,6 +555,9 @@ p code {
     font-size: 45px !important;
     height: 90px !important;
     width: 90px !important;
+    border-color: rgba(92, 54, 197, 0.6); /* Blue */
+    box-shadow: 0 0 20px rgba(92, 54, 197, 0.6);
+    animation: gentleBounce 2s infinite; /* Add the bounce animation */
   }
 
   .typewriter {
@@ -791,18 +795,50 @@ mjx-container[jax="CHTML"][display="true"] {
 }
 
 #scrollBtn {
-  position: absolute;
-  z-index: 100;
-  color: rgba(255, 255, 255, 0.423);
-  bottom: 36px;
+  position: fixed;
+  z-index: 1000;
+  color: rgba(255, 255, 255, 0.8);
+  bottom: 37px;
   right: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40px;
-  width: 40px;
-  border-radius: 50px;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
   font-size: 24px;
-  border: 1px solid rgba(204, 224, 252, 0.2);
+  border: 1px solid rgba(204, 224, 252, 0.3);
   cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transition for all properties */
+}
+
+/* Super cool hover effect */
+#scrollBtn:hover {
+  transform: scale(1.1) rotate(20deg); /* Scale up and rotate */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+  color: #fff; /* Change text color */
+  animation: pulse-border 3s infinite; /* Add pulsing border effect */
+}
+
+/* #scrollBtn.visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+} */
+
+/* Define the bounce animation */
+@keyframes gentleBounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px); /* Bounce up */
+  }
+  60% {
+    transform: translateY(-5px); /* Slightly lower bounce */
+  }
 }
