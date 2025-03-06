@@ -508,14 +508,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const updateButtonText = () => {
     const filesBtn = document.querySelector("#files");
     const microphoneBtn = document.querySelector("#microphone-btn");
+    const photoBtn = document.querySelector("#photo");
 
     if (window.innerWidth <= 1000) {
       filesBtn.innerHTML = '<i class="fa-solid fa-paperclip"></i> Files';
       microphoneBtn.innerHTML =
         '<i class="fa-solid fa-microphone-lines"></i> Audio';
+      photoBtn.innerHTML = '<i class="fa-solid fa-camera"></i> Image';
     } else {
       filesBtn.innerHTML = '<i class="fa-solid fa-paperclip"></i>';
       microphoneBtn.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
+      photoBtn.innerHTML = '<i class="fa-solid fa-camera"></i>';
     }
   };
 

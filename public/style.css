@@ -494,6 +494,10 @@ p code {
     width: 100%;
   }
 
+  /* #photo {
+    animation: pulse-border 3s infinite;
+  } */
+
   /* Update the send button specifically */
   .txtarea .btns #send-btn {
     font-size: 50px !important;
