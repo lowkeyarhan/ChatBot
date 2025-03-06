@@ -219,7 +219,7 @@ body {
   height: 40px;
   border: none;
   resize: none;
-  color: #e0e0e0;
+  color: #e0e0e09e;
   line-height: 1.5;
   background-color: transparent;
   white-space: pre-wrap;
@@ -549,6 +549,13 @@ p code {
     max-width: 80%;
   }
 
+  #scrollBtn {
+    bottom: 280px !important;
+    font-size: 45px !important;
+    height: 90px !important;
+    width: 90px !important;
+  }
+
   .typewriter {
     font-size: 35px !important;
   }
@@ -781,4 +788,21 @@ mjx-container[jax="CHTML"][display="true"] {
 
 .image-count.update-animation {
   animation: countUpdate 0.2s ease, pulse-border 3s infinite; /* Update animation */
+}
+
+#scrollBtn {
+  position: absolute;
+  z-index: 100;
+  color: rgba(255, 255, 255, 0.423);
+  bottom: 36px;
+  right: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 50px;
+  font-size: 24px;
+  border: 1px solid rgba(204, 224, 252, 0.2);
+  cursor: pointer;
 }
