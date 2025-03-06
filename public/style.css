@@ -731,7 +731,22 @@ mjx-container[jax="CHTML"][display="true"] {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  animation: pulse-border 5s infinite;
+  transform-origin: center;
+  animation: countAppear 0.3s ease-out forwards, pulse-border 3s infinite;
+}
+
+@keyframes countAppear {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 /* Update for mobile */
@@ -749,4 +764,21 @@ mjx-container[jax="CHTML"][display="true"] {
 #photo {
   position: relative;
   display: inline-block;
+}
+
+/* Separate keyframes for update animation */
+@keyframes countUpdate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.image-count.update-animation {
+  animation: countUpdate 0.2s ease, pulse-border 3s infinite; /* Update animation */
 }

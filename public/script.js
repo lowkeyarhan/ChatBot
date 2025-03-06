@@ -140,8 +140,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const existingCount = photoBtn.querySelector(".image-count");
     if (imageCount > 0) {
       if (existingCount) {
+        // Update existing count with scale animation
         existingCount.textContent = `+${imageCount}`;
+        existingCount.classList.remove("update-animation");
+        void existingCount.offsetWidth; // Force reflow
+        existingCount.classList.add("update-animation");
       } else {
+        // New count with rotate animation
         const countElement = document.createElement("div");
         countElement.className = "image-count";
         countElement.textContent = `+${imageCount}`;
