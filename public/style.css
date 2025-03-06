@@ -743,7 +743,7 @@ mjx-container[jax="CHTML"][display="true"] {
   justify-content: center;
   font-weight: bold;
   transform-origin: center;
-  animation: countAppear 0.3s ease-out forwards, pulse-border 3s infinite;
+  animation: countAppear 0.5s ease-out forwards, pulse-border 3s infinite;
 }
 
 @keyframes countAppear {
@@ -791,7 +791,7 @@ mjx-container[jax="CHTML"][display="true"] {
 }
 
 .image-count.update-animation {
-  animation: countUpdate 0.2s ease, pulse-border 3s infinite; /* Update animation */
+  animation: countUpdate 0.3s ease-in-out, pulse-border 3s infinite; /* Update animation */
 }
 
 #scrollBtn {
