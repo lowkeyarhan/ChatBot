@@ -91,6 +91,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // Add sound function after existing sound functions
+  function playCounterUpdateSound() {
+    try {
+      const audio = new Audio("/sounds/moan.mp3");
+      audio.volume = 0.5;
+      audio.play().catch((error) => {
+        console.log("Error playing counter update sound:", error);
+      });
+    } catch (error) {
+      console.log("Error creating audio:", error);
+    }
+  }
+
   function typeMessage(element, text, index = 0) {
     if (index < text.length) {
       element.innerHTML += text.charAt(index);
@@ -140,7 +153,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const existingCount = photoBtn.querySelector(".image-count");
     if (imageCount > 0) {
       if (existingCount) {
-        // Update existing count with scale animation
+        // Update existing count with scale animation and play sound
         existingCount.textContent = `+${imageCount}`;
         existingCount.classList.remove("update-animation");
         void existingCount.offsetWidth; // Force reflow
@@ -152,6 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         countElement.textContent = `+${imageCount}`;
         photoBtn.appendChild(countElement);
       }
+      playCounterUpdateSound(); // Play sound when counter updates
     } else if (existingCount) {
       existingCount.remove();
     }
