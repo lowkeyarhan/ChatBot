@@ -363,13 +363,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (typeof message === "object" && message.image) {
       // Handle message with image
-      if (message.text) {
-        formattedMessage.innerHTML += `<p>${escapeHtml(message.text)}</p>`;
-      }
       const img = document.createElement("img");
       img.src = message.image;
       img.classList.add("chat-image");
-      formattedMessage.appendChild(img);
+      formattedMessage.appendChild(img); // Append image first
+
+      if (message.text) {
+        const textElement = document.createElement("p");
+        textElement.innerHTML = escapeHtml(message.text);
+        formattedMessage.appendChild(textElement); // Append text below the image
+      }
     } else {
       // Handle regular message
       // Process the message to include a <br> after code blocks and handle headings
