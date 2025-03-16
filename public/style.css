@@ -106,6 +106,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-bottom: 30px;
 }
 
 #userchat {
@@ -469,7 +470,7 @@ p code {
     width: 95%;
     border-radius: 40px;
     flex-direction: column;
-    padding: 20px;
+    padding: 20px 20px 20px 30px;
     box-shadow: 0 4px 6px rgba(113, 113, 113, 0.1);
   }
 
@@ -514,6 +515,8 @@ p code {
     padding: 10px 20px 10px 20px;
     font-size: 25px;
     color: rgba(255, 255, 255, 0.423);
+    width: 113px;
+    text-align: center;
   }
   /* Set font size for all <p> elements to 25px */
   p {
@@ -547,6 +550,7 @@ p code {
     border-color: rgba(92, 54, 197, 0.6); /* Blue */
     box-shadow: 0 0 20px rgba(92, 54, 197, 0.6);
     animation: gentleBounce 2s infinite; /* Add the bounce animation */
+    background-color: rgba(13, 13, 21, 0.9);
   }
 
   .typewriter {
@@ -590,6 +594,13 @@ p code {
 @media (min-width: 1001px) {
   .txtarea textarea {
     height: 40px; /* Set initial height to 40px for desktop */
+  }
+  /* Super cool hover effect */
+  #scrollBtn:hover {
+    transform: scale(1.1) rotate(20deg); /* Scale up and rotate */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
+    color: #fff; /* Change text color */
+    animation: pulse-border 3s infinite; /* Add pulsing border effect */
   }
 }
 
@@ -799,14 +810,6 @@ mjx-container[jax="CHTML"][display="true"] {
   border: 1px solid rgba(204, 224, 252, 0.3);
   cursor: pointer;
   transition: all 0.3s ease; /* Smooth transition for all properties */
-}
-
-/* Super cool hover effect */
-#scrollBtn:hover {
-  transform: scale(1.1) rotate(20deg); /* Scale up and rotate */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Add shadow for depth */
-  color: #fff; /* Change text color */
-  animation: pulse-border 3s infinite; /* Add pulsing border effect */
 }
 
 /* #scrollBtn.visible {
