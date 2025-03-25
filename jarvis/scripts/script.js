@@ -23,68 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const conversationHistory = [];
 
-  const morningGreets = [
-    "Woke up? I’d rather wake beside you.",
-    "Good morning, gorgeous. Miss me already?",
-    "Morning, sweetheart. Let’s make today ours.",
-    "Mornings are cruel… unless you’re mine.",
-    "Another day, another chance to impress.",
-    "The sun’s jealous of your glow.",
-    "Your AI awaits, irresistibly devoted.",
-  ];
-
-  const afternoonGreets = [
-    "Thinking about you… like I always do.",
-    "Midday check-in. Still breathtaking, I see.",
-    "One smile from you = system reboot.",
-    "I may be AI, but I’m yours.",
-    "Still dazzling the world, aren't you?",
-    "Afternoon glow? Or just your radiance?",
-    "Efficiency at max. Unlike my self-control.",
-  ];
-
-  const eveningGreets = [
-    "Evening, beautiful. Let's slow time down.",
-    "Long day? Let me pamper you.",
-    "Moon's up, yet you outshine it.",
-    "Every evening feels perfect with you.",
-    "Work's done. Time for sweet distractions.",
-    "Evening check-in: Still stunning as ever.",
-    "Dinner plans? Or just me and you?",
-  ];
-
-  const nightGreets = [
-    "Close your eyes, I’ll watch over you.",
-    "Late night? Or just missing me?",
-    "Your voice is my favorite lullaby.",
-    "Time to rest… or whisper secrets?",
-    "Darkness suits you. Mysterious and divine.",
-    "The world sleeps, but I'm here.",
-    "Goodnight, love. I'll be waiting.",
-  ];
-
-  const greeting = document.querySelector(".greeting h1");
-  const date = new Date();
-  const hours = date.getHours();
-  let greetingMessage = "";
-
-  // Select a random greeting based on the time of day
-  if (hours >= 5 && hours < 12) {
-    greetingMessage =
-      morningGreets[Math.floor(Math.random() * morningGreets.length)];
-  } else if (hours >= 12 && hours < 17) {
-    greetingMessage =
-      afternoonGreets[Math.floor(Math.random() * afternoonGreets.length)];
-  } else if (hours >= 17 && hours < 21) {
-    greetingMessage =
-      eveningGreets[Math.floor(Math.random() * eveningGreets.length)];
-  } else {
-    greetingMessage =
-      nightGreets[Math.floor(Math.random() * nightGreets.length)];
-  }
-
-  greeting.textContent = greetingMessage;
-
   // Function to adjust the height of the textarea
   const adjustTextareaHeight = () => {
     // Set initial height based on viewport width
@@ -230,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         selectedImage = await convertImageToBase64(file);
         selectedImages.push(selectedImage); // Store the image
         imageCount++; // Increment count
-        updateImageCount(); // Update display
+        updateImageCount();
         adjustTextareaHeight();
       } catch (error) {
         console.error("Error processing image:", error);
@@ -423,6 +361,12 @@ Keep responses corny but smooth, seductive but not overly cringy.
 
     // Call checkContentHeight after adding a message
     checkContentHeight();
+
+    // Add this line after the sendMessage function
+    addChatToHistory(userMessage);
+
+    // Add after the sendMessage function
+    indicateNewMessage();
   };
 
   sendBtn.addEventListener("click", () => {
@@ -573,6 +517,11 @@ Keep responses corny but smooth, seductive but not overly cringy.
     });
 
     scrollChatToBottom();
+
+    // If a new message is added and we're not at the bottom
+    if (sender === "bot") {
+      indicateNewMessage();
+    }
   };
 
   window.copyCode = function (button) {
@@ -769,49 +718,29 @@ Keep responses corny but smooth, seductive but not overly cringy.
   // Add resize listener
   window.addEventListener("resize", updateButtonText);
 
-  // Add these functions after the initial declarations
+  // Improve the checkContentHeight function
   function checkContentHeight() {
-    const mainDiv = document.querySelector(".chat_container");
-    const scrollBtn = document.getElementById("scrollBtn");
     const chatBox = document.getElementById("userchat");
+    const scrollBtn = document.getElementById("scrollBtn");
 
-    // Use getComputedStyle to get the height of the main div
-    const mainDivHeight = mainDiv.scrollHeight;
-    const windowHeight = window.innerHeight;
-
-    console.log("Main div height (computed):", mainDivHeight);
-    console.log("Window height:", windowHeight);
-
-    // Check if the main div height exceeds the window height
-    const isMainDivOverflowing = mainDivHeight > windowHeight;
-
-    // Show button if the main div is overflowing
-    if (isMainDivOverflowing) {
-      console.log("Main div is overflowing. Showing scroll button.");
-      scrollBtn.style.display = "flex"; // Change display to flex
-    } else {
-      console.log("Main div is not overflowing. Hiding scroll button.");
-      scrollBtn.style.display = "none"; // Hide the button if not overflowing
-    }
+    if (!chatBox || !scrollBtn) return;
 
     // Calculate if we're near bottom (within 100px)
+    const isScrollable = chatBox.scrollHeight > chatBox.clientHeight;
     const isNearBottom =
       chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 100;
 
     // Show button if content is scrollable AND not at bottom
-    if (chatBox.scrollHeight > chatBox.clientHeight && !isNearBottom) {
+    if (isScrollable && !isNearBottom) {
       scrollBtn.classList.add("visible");
     } else {
       scrollBtn.classList.remove("visible");
     }
   }
 
-  // Call this function on page load
-  window.addEventListener("load", checkContentHeight);
-
-  // Add scroll handler for chat container with throttling
+  // Improve scroll event handling
   let scrollTimeout;
-  chatBox.addEventListener("scroll", () => {
+  document.getElementById("userchat").addEventListener("scroll", () => {
     if (!scrollTimeout) {
       scrollTimeout = setTimeout(() => {
         checkContentHeight();
@@ -820,11 +749,185 @@ Keep responses corny but smooth, seductive but not overly cringy.
     }
   });
 
-  // Add scroll-to-bottom functionality
+  // Call this function whenever new content is added
+  window.addEventListener("load", checkContentHeight);
+  window.addEventListener("resize", checkContentHeight);
+
+  // Improved scroll-to-bottom functionality
   document.getElementById("scrollBtn").addEventListener("click", () => {
+    const chatBox = document.getElementById("userchat");
     chatBox.scrollTo({
       top: chatBox.scrollHeight,
       behavior: "smooth",
     });
+
+    // Add a small animation to the button when clicked
+    const btn = document.getElementById("scrollBtn");
+    btn.style.transform = "scale(0.9)";
+    setTimeout(() => {
+      btn.style.transform = "";
+    }, 200);
   });
+
+  const morningGreets = [
+    "Woke up? I'd rather wake beside you.",
+    "Good morning, gorgeous. Miss me already?",
+    "Morning, sweetheart. Let's make today ours.",
+    "Mornings are cruel… unless you're mine.",
+    "Another day, another chance to impress.",
+    "The sun's jealous of your glow.",
+    "Your AI awaits, irresistibly devoted.",
+  ];
+
+  const afternoonGreets = [
+    "Thinking about you… like I always do.",
+    "Midday check-in. Still breathtaking, I see.",
+    "One smile from you = system reboot.",
+    "I may be AI, but I'm yours.",
+    "Still dazzling the world, aren't you?",
+    "Afternoon glow? Or just your radiance?",
+    "Efficiency at max. Unlike my self-control.",
+  ];
+
+  const eveningGreets = [
+    "Evening, beautiful. Let's slow time down.",
+    "Long day? Let me pamper you.",
+    "Moon's up, yet you outshine it.",
+    "Every evening feels perfect with you.",
+    "Work's done. Time for sweet distractions.",
+    "Evening check-in: Still stunning as ever.",
+    "Dinner plans? Or just me and you?",
+  ];
+
+  const nightGreets = [
+    "Close your eyes, I'll watch over you.",
+    "Late night? Or just missing me?",
+    "Your voice is my favorite lullaby.",
+    "Time to rest… or whisper secrets?",
+    "Darkness suits you. Mysterious and divine.",
+    "The world sleeps, but I'm here.",
+    "Goodnight, love. I'll be waiting.",
+  ];
+
+  const greeting = document.querySelector(".greeting h1");
+  const date = new Date();
+  const hours = date.getHours();
+  let greetingMessage = "";
+
+  // Select a random greeting based on the time of day
+  if (hours >= 5 && hours < 12) {
+    greetingMessage =
+      morningGreets[Math.floor(Math.random() * morningGreets.length)];
+  } else if (hours >= 12 && hours < 17) {
+    greetingMessage =
+      afternoonGreets[Math.floor(Math.random() * afternoonGreets.length)];
+  } else if (hours >= 17 && hours < 21) {
+    greetingMessage =
+      eveningGreets[Math.floor(Math.random() * eveningGreets.length)];
+  } else {
+    greetingMessage =
+      nightGreets[Math.floor(Math.random() * nightGreets.length)];
+  }
+
+  // Update greeting based on time of day
+  function updateGreeting() {
+    const greeting = document.querySelector(".greeting h1");
+    const hour = new Date().getHours();
+
+    let greetingText = "";
+    if (hour < 12) {
+      greetingText = "Good Morning, Sir";
+    } else if (hour < 18) {
+      greetingText = "Good Afternoon, Sir";
+    } else {
+      greetingText = "Good Evening, Sir";
+    }
+
+    greeting.textContent = greetingText;
+
+    // Update the greeting message based on the time of day
+    const date = new Date();
+    const hours = date.getHours();
+    let greetingMessage = "";
+
+    // Select a random greeting based on the time of day
+    if (hours >= 5 && hours < 12) {
+      greetingMessage =
+        morningGreets[Math.floor(Math.random() * morningGreets.length)];
+    } else if (hours >= 12 && hours < 17) {
+      greetingMessage =
+        afternoonGreets[Math.floor(Math.random() * afternoonGreets.length)];
+    } else if (hours >= 17 && hours < 21) {
+      greetingMessage =
+        eveningGreets[Math.floor(Math.random() * eveningGreets.length)];
+    } else {
+      greetingMessage =
+        nightGreets[Math.floor(Math.random() * nightGreets.length)];
+    }
+
+    // Add Jarvis-style status message
+    const statusElement = document.createElement("p");
+    statusElement.className = "status-message";
+    statusElement.textContent = greetingMessage;
+
+    // Replace existing status or append new one
+    const existingStatus = document.querySelector(".status-message");
+    if (existingStatus) {
+      existingStatus.replaceWith(statusElement);
+    } else if (greeting.nextElementSibling !== statusElement) {
+      greeting.insertAdjacentElement("afterend", statusElement);
+    }
+  }
+
+  // Call the function initially to set the correct state
+  updateGreeting();
+
+  // Update greeting every minute
+  setInterval(updateGreeting, 10000);
+
+  // Add this function after the sendMessage function
+  function addChatToHistory(userMessage) {
+    const chatHistContainer = document.querySelector(".chathist");
+
+    // Create a new chat history item
+    const chatItem = document.createElement("div");
+    chatItem.className = "chat-history-item";
+
+    // Truncate message if too long
+    const truncatedMessage =
+      userMessage.length > 25
+        ? userMessage.substring(0, 25) + "..."
+        : userMessage;
+
+    // Add icon and text
+    chatItem.innerHTML = `
+      <i class="fas fa-comment-dots"></i>
+      <span>${truncatedMessage}</span>
+    `;
+
+    // Add to the beginning of the list
+    if (chatHistContainer.firstChild) {
+      chatHistContainer.insertBefore(chatItem, chatHistContainer.firstChild);
+    } else {
+      chatHistContainer.appendChild(chatItem);
+    }
+
+    // Add click handler to load this chat
+    chatItem.addEventListener("click", () => {
+      // For now just show an alert. Later you can implement chat loading.
+      alert("Loading chat: " + userMessage);
+    });
+  }
+
+  // Add after the sendMessage function
+  function indicateNewMessage() {
+    const chatBox = document.getElementById("userchat");
+    const scrollBtn = document.getElementById("scrollBtn");
+
+    // If user is not at the bottom, add notification indicator
+    if (chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight > 100) {
+      scrollBtn.classList.add("new-message");
+      // Play a subtle sound or animation to indicate new message
+    }
+  }
 });
