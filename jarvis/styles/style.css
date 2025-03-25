@@ -1279,7 +1279,6 @@ mjx-container[jax="CHTML"][display="true"] {
 .message.bot:hover,
 .message.user:hover {
   transform: translateX(3px);
-  box-shadow: 0 0 15px rgba(10, 132, 255, 0.2);
 }
 
 /* New message indicator for scroll button */
