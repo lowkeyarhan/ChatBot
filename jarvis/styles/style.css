@@ -27,6 +27,9 @@ body {
   position: sticky;
   top: 0;
 }
+.header p{
+  font-size: 14px;
+}
 
 .sidebar h1 {
   font-family: "Dune rise", sans-serif;
@@ -38,7 +41,6 @@ body {
 
 .sidebar p {
   font-family: "Roboto", sans-serif;
-  font-size: 1.2rem;
   color: #e0e0e0;
   margin: 0;
 }
@@ -161,7 +163,7 @@ body {
 }
 .message p {
   margin: 0;
-  font-size: 14px;
+  font-size: 1rem;
   line-height: 1.5;
 }
 
@@ -467,7 +469,7 @@ p code {
     padding: 40px;
   }
   .greeting h1 {
-    font-size: 65px;
+    font-size: 50px;
   }
   #userchat {
     gap: 2.5rem;
@@ -505,7 +507,7 @@ p code {
 
   .txtarea textarea {
     height: 80px; /* Set initial height to 80px for mobile */
-    font-size: 14px !important;
+    font-size: 14px;
     padding: 10px 10px 10px 10px;
   }
   .txtarea textarea::placeholder {
@@ -527,18 +529,18 @@ p code {
   }
   /* Set font size for all <p> elements to 25px */
   p {
-    font-size: 25px !important; /* Ensure all <p> elements have a font size of 25px */
+    font-size: 25px; /* Ensure all <p> elements have a font size of 25px */
   }
 
   b {
-    font-size: 30px !important;
+    font-size: 30px;
   }
 
   .chat_container {
     width: 90%;
   }
   .formatted-message p {
-    font-size: 25px !important; /* Ensure formatted messages also have a font size of 25px */
+    font-size: 25px; /* Ensure formatted messages also have a font size of 25px */
   }
 
   .message.user {
@@ -551,7 +553,7 @@ p code {
 
   #scrollBtn {
     bottom: 280px !important;
-    font-size: 45px !important;
+    font-size: 45px;
     height: 90px !important;
     width: 90px !important;
     border-color: rgba(92, 54, 197, 0.6); /* Blue */
@@ -647,10 +649,6 @@ p .MathJax_Display {
   font-size: inherit !important;
 }
 
-/* Force paragraph styles */
-p {
-  font-size: 14px !important;
-}
 
 p.math,
 p .math,
