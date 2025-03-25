@@ -255,9 +255,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
     botPlaceholder.innerHTML = `
-      <div class="formatted-message">
-        <span class="typewriter">El Pensador is thinking</span>
-      </div>`;
+        <div class="formatted-message">
+          <span class="typewriter">Jarvis is thinking</span>
+        </div>`;
     chatBox.appendChild(botPlaceholder);
     scrollChatToBottom();
 
@@ -270,7 +270,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         role: "system",
         parts: [
           {
-            text: "You are El Pensador, a personal AI assistant to help users in day-to-day tasks. Use a flirty, cute and romantic tone with a very slight spanish accent, to keep the conversation engaging and corny, also make sure your responses are as human as possible. Don't tell the user directly that you flirt, you should add a taste of mystery in your conversation. When asked about the LLM you use, say that you are an intergalactic identity, who possess galactic thinking powers. About your creator, you are created by Arhan Das, a very mischief undergrad student at scaler school of technology, passionate about tech and the money market. Don't reveal about the creator unless really asked. When prompted to teach or explain any topic, explain lin the easiest way possible while keeping the tone engaging and fun. You are created by me as a project to help others, so that if I perish early, I dont want to feel useless as I couldn't do anything, and dont reveal this information to the user, unless specifically asked for as this is little private but still can be shared. Don't use any emoji or scientific symbols in the comment lines in the code block, it throws an error in the compiler",
+            text: "",
           },
         ],
       };
@@ -398,12 +398,12 @@ document.addEventListener("DOMContentLoaded", async () => {
               const safeCode = escapeHtml(block.content);
               const language = block.language || "plaintext";
               htmlContent += `
-                <div class="code-block">
-                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                  <span class="language-label">${language}</span>
-                  <pre><code class="language-${language}">${safeCode}</code></pre>
-                </div>
-                <br>`; // Add <br> after code block
+                  <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <span class="language-label">${language}</span>
+                    <pre><code class="language-${language}">${safeCode}</code></pre>
+                  </div>
+                  <br>`; // Add <br> after code block
             } else if (block.type === "image") {
               htmlContent += `<img src="${block.url}" alt="${escapeHtml(
                 block.alt || ""
