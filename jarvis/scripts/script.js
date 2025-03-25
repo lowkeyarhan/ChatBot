@@ -836,11 +836,11 @@ Keep responses corny but smooth, seductive but not overly cringy.
 
     let greetingText = "";
     if (hour < 12) {
-      greetingText = "Good Morning, Sir";
+      greetingText = "Good Morning!";
     } else if (hour < 18) {
-      greetingText = "Good Afternoon, Sir";
+      greetingText = "Good Afternoon!";
     } else {
-      greetingText = "Good Evening, Sir";
+      greetingText = "Good Evening!";
     }
 
     greeting.textContent = greetingText;
@@ -883,7 +883,7 @@ Keep responses corny but smooth, seductive but not overly cringy.
   updateGreeting();
 
   // Update greeting every minute
-  setInterval(updateGreeting, 10000);
+  setInterval(updateGreeting, 30000);
 
   // Add this function after the sendMessage function
   function addChatToHistory(userMessage) {

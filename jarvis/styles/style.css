@@ -387,9 +387,9 @@ body {
   position: relative;
   margin: 15px 0;
   padding: 12px 15px;
-  border-radius: 8px;
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
+  max-width: 80%;
 }
 
 .message.user {
@@ -411,6 +411,7 @@ body {
   color: rgba(204, 224, 252);
   margin-right: auto;
   border-style: none;
+  border-radius: 20px 20px 20px 0px;
   animation: receiveMessage 0.5s ease-out;
 }
 .message.bot p {
@@ -650,7 +651,6 @@ body {
   font-family: "Fira Code", monospace;
   font-size: 14px;
   line-height: 1.4;
-  border: none;
   display: flex;
   flex-direction: column;
   height: fit-content;
@@ -674,8 +674,7 @@ pre code p {
   overflow-y: auto;
   padding: 15px 15px 15px 15px;
   margin-top: 40px;
-  background-color: rgb(20, 20, 51);
-  border: none;
+  background-color: rgb(14, 23, 42);
   color: #ffffff;
   font-family: "Fira Code", monospace;
 }
@@ -824,6 +823,9 @@ p code {
   #userchat {
     gap: 2.5rem;
     padding: 0px;
+  }
+  .message .bot .formatted-message {
+    border-radius: 30px;
   }
   .txtarea {
     width: 95%;
