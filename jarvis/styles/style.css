@@ -393,8 +393,10 @@ body {
 }
 
 .message.user {
+  animation: messageInUser 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform-origin: right center;
   background: rgba(255, 255, 255, 0.07);
-  border-left: 2px solid var(--primary-blue);
+  border-left: 3px solid var(--primary-blue);
   align-self: flex-end;
   color: rgba(204, 224, 252);
   margin-left: auto;
@@ -404,6 +406,8 @@ body {
 }
 
 .message.bot {
+  animation: messageInBot 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform-origin: left center;
   background: rgba(10, 132, 255, 0.07);
   border-left: 3px solid var(--dark-blue);
   display: wrap;
@@ -756,16 +760,27 @@ p code {
 
 /* Optional: Add a smooth fade-in effect */
 .message.bot {
-  opacity: 0;
-  animation: fadeIn 0.3s ease-in-out forwards;
+  opacity: 1;
+  animation: messageInBot 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
-@keyframes fadeIn {
-  from {
+@keyframes messageInBot {
+  0% {
     opacity: 0;
+    transform: translateX(-30px) scale(0.9);
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
   }
-  to {
+  20% {
+    clip-path: polygon(0 0, 5% 0, 5% 100%, 0 100%);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateX(5px) scale(1.01);
+  }
+  100% {
     opacity: 1;
+    transform: translateX(0) scale(1);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   }
 }
 
@@ -1295,4 +1310,508 @@ mjx-container[jax="CHTML"][display="true"] {
   background-color: #ff3b30;
   border-radius: 50%;
   border: 2px solid var(--background-dark);
+}
+
+/* Add energy pulse effect to messages */
+.message::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  box-shadow: 0 0 0 0 rgba(10, 132, 255, 0);
+  opacity: 0;
+  z-index: -1;
+  transition: all 0.5s ease;
+}
+
+.message.bot::after {
+  animation: messagePulse 2s ease-out;
+}
+
+@keyframes messagePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.3);
+    opacity: 1;
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(10, 132, 255, 0);
+    opacity: 0.5;
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(10, 132, 255, 0);
+    opacity: 0;
+  }
+}
+
+/* Message hover effect */
+.message.bot:hover,
+.message.user:hover {
+  transform: translateX(3px);
+  box-shadow: 0 0 15px rgba(10, 132, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* Remove old fade-in animation */
+.message.bot {
+  opacity: 1;
+  animation: messageInBot 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes messageInUser {
+  0% {
+    opacity: 0;
+    transform: translateX(30px) scale(0.9);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-5px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes messageInBot {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.9);
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  20% {
+    clip-path: polygon(0 0, 5% 0, 5% 100%, 0 100%);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateX(5px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+/* Iron Man JARVIS Loading Animation - Enhanced Version */
+.message.bot.loading {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  animation: none;
+  display: flex;
+  justify-content: center;
+  min-height: 80px;
+  margin: 30px 0;
+}
+
+.message.bot.loading .formatted-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: auto;
+}
+
+.jarvis-analyzer {
+  position: relative;
+  width: 320px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 14, 23, 0.8);
+  border-radius: 40px;
+  overflow: hidden;
+  border: 1px solid rgba(10, 132, 255, 0.4);
+  box-shadow: 0 0 25px rgba(10, 132, 255, 0.25),
+    inset 0 0 20px rgba(0, 0, 0, 0.6);
+  padding: 0 20px;
+}
+
+/* Symmetrical Arc Reactors on both sides */
+.arc-reactor {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin: 0 10px;
+  z-index: 2;
+}
+
+.arc-reactor.left {
+  transform: scale(0.85);
+}
+
+.arc-reactor.right {
+  transform: scale(0.85);
+}
+
+.reactor-inner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(159, 240, 255, 0.9) 0%,
+    rgba(10, 132, 255, 0.7) 40%,
+    rgba(10, 132, 255, 0.2) 70%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(10, 132, 255, 0.9), 0 0 30px rgba(10, 132, 255, 0.4);
+  animation: reactorPulse 2.5s infinite alternate;
+}
+
+.reactor-ring {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid rgba(10, 132, 255, 0.7);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: reactorRingSpin 6s linear infinite;
+}
+
+.reactor-ring::before,
+.reactor-ring::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px dashed rgba(10, 132, 255, 0.3);
+  animation: reactorRingPulse 4s infinite alternate;
+  box-sizing: border-box;
+}
+
+.reactor-ring::after {
+  animation-delay: 1.5s;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+  border-style: dotted;
+}
+
+/* Improved HUD Display */
+.hud-display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--text-light);
+  font-family: "Comfortaa", sans-serif;
+  padding: 0 15px;
+  z-index: 2;
+}
+
+.hud-title {
+  font-size: 14px;
+  color: var(--primary-blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(10, 132, 255, 0.7);
+  text-align: center;
+}
+
+.hud-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(0, 7, 20, 0.7);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(10, 132, 255, 0.15);
+}
+
+.hud-progress {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 132, 255, 0.7),
+    rgba(88, 49, 214, 0.9)
+  );
+  animation: progressScan 3s infinite;
+  opacity: 0.8;
+}
+
+.hud-percent {
+  font-size: 16px;
+  color: var(--text-light);
+  min-width: 55px;
+  text-align: right;
+  text-shadow: 0 0 8px rgba(10, 132, 255, 0.5);
+  font-weight: 500;
+}
+
+/* Hexagon data metrics */
+.hud-metrics {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  color: rgba(224, 224, 224, 0.8);
+}
+
+.metric-item {
+  position: relative;
+  padding-left: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: var(--primary-blue);
+  transform: translateY(-50%) rotate(45deg);
+  opacity: 0.7;
+  animation: metricPulse 3s infinite alternate;
+}
+
+.metric-item:nth-child(2)::before {
+  animation-delay: 0.7s;
+  background: #4c6df5;
+}
+
+.metric-item:nth-child(3)::before {
+  animation-delay: 1.4s;
+  background: #7244c4;
+}
+
+/* Enhanced scanning effects */
+.scan-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scan-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(10, 132, 255, 0.8),
+    transparent
+  );
+  top: 50%;
+  transform: translateY(-50%);
+  animation: scanAnimation 2.5s infinite;
+  opacity: 0.7;
+}
+
+.scan-line.vertical {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    0deg,
+    transparent,
+    rgba(10, 132, 255, 0.6),
+    transparent
+  );
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  animation: verticalScanAnimation 4s infinite;
+  animation-delay: 1s;
+}
+
+/* Hexagonal mesh background for HUD */
+.jarvis-analyzer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.1;
+  background-image: linear-gradient(
+      to right,
+      rgba(10, 132, 255, 0.5) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(10, 132, 255, 0.5) 1px, transparent 1px);
+  background-size: 10px 10px;
+  z-index: 0;
+}
+
+/* Enhanced Animations */
+@keyframes reactorPulse {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.85);
+    box-shadow: 0 0 10px rgba(10, 132, 255, 0.6),
+      0 0 20px rgba(10, 132, 255, 0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 15px rgba(10, 132, 255, 1), 0 0 30px rgba(10, 132, 255, 0.6);
+  }
+}
+
+@keyframes reactorRingSpin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes reactorRingPulse {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.9) rotate(0deg);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(90deg);
+  }
+}
+
+@keyframes progressScan {
+  0% {
+    left: -100%;
+    width: 60%;
+  }
+  100% {
+    left: 100%;
+    width: 60%;
+  }
+}
+
+@keyframes scanAnimation {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes verticalScanAnimation {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes metricPulse {
+  0% {
+    opacity: 0.5;
+    transform: translateY(-50%) rotate(45deg) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) rotate(45deg) scale(1.2);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 1000px) {
+  .message.bot.loading {
+    min-height: 120px;
+  }
+
+  .jarvis-analyzer {
+    width: 380px;
+    height: 110px;
+    border-radius: 55px;
+    padding: 0 25px;
+  }
+
+  .arc-reactor {
+    width: 70px;
+    height: 70px;
+  }
+
+  .reactor-inner {
+    width: 35px;
+    height: 35px;
+  }
+
+  .reactor-ring {
+    width: 65px;
+    height: 65px;
+    border-width: 3px;
+  }
+
+  .reactor-ring::before,
+  .reactor-ring::after {
+    border-width: 2px;
+  }
+
+  .hud-title {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .hud-bar {
+    height: 8px;
+    border-radius: 4px;
+  }
+
+  .hud-percent {
+    font-size: 24px;
+    min-width: 80px;
+  }
+
+  .hud-metrics {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .metric-item::before {
+    width: 14px;
+    height: 14px;
+  }
 }

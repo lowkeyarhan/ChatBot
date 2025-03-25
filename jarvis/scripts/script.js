@@ -238,12 +238,84 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const botPlaceholder = document.createElement("div");
     botPlaceholder.classList.add("message", "bot", "loading");
+
+    // Random percentage values for the loading animation
+    const initialPercent = Math.floor(Math.random() * 30) + 10;
+    const progressMessages = [
+      "Analyzing request",
+      "Processing data",
+      "Computing response",
+      "Accessing database",
+      "System integration",
+      "Neural processing",
+    ];
+    const randomMessage =
+      progressMessages[Math.floor(Math.random() * progressMessages.length)];
+
     botPlaceholder.innerHTML = `
-          <div class="formatted-message">
-            <span class="typewriter">Jarvis is thinking</span>
-          </div>`;
+      <div class="formatted-message">
+        <div class="jarvis-analyzer">
+          <div class="arc-reactor left">
+            <div class="reactor-ring"></div>
+            <div class="reactor-inner"></div>
+          </div>
+          <div class="hud-display">
+            <div class="hud-title">J.A.R.V.I.S</div>
+            <div class="hud-status">
+              <div class="hud-bar">
+                <div class="hud-progress"></div>
+              </div>
+              <div class="hud-percent">${initialPercent}%</div>
+            </div>
+            <div class="hud-metrics">
+              <div class="metric-item">SYS</div>
+              <div class="metric-item">DATA</div>
+              <div class="metric-item">PROC</div>
+            </div>
+          </div>
+          <div class="arc-reactor right">
+            <div class="reactor-ring"></div>
+            <div class="reactor-inner"></div>
+          </div>
+          <div class="scan-effect">
+            <div class="scan-line"></div>
+            <div class="scan-line vertical"></div>
+          </div>
+        </div>
+      </div>`;
+
     chatBox.appendChild(botPlaceholder);
     scrollChatToBottom();
+
+    // Simulate progress updates with improved animation
+    let currentPercent = initialPercent;
+    const maxPercent = 98;
+    const progressInterval = setInterval(() => {
+      if (currentPercent < maxPercent) {
+        // More sophisticated progress animation - sometimes jumps, sometimes creeps
+        const increment =
+          Math.random() < 0.3
+            ? Math.floor(Math.random() * 20) + 10 // Occasional bigger jumps
+            : Math.floor(Math.random() * 5) + 1; // Smaller increments
+
+        currentPercent += increment;
+        if (currentPercent > maxPercent) currentPercent = maxPercent;
+
+        const percentDisplay = botPlaceholder.querySelector(".hud-percent");
+        if (percentDisplay) {
+          percentDisplay.textContent = `${currentPercent}%`;
+
+          // Add color change as percentage increases
+          if (currentPercent > 80) {
+            percentDisplay.style.color = "#4cffb4";
+            percentDisplay.style.textShadow = "0 0 8px rgba(76, 255, 180, 0.7)";
+          } else if (currentPercent > 50) {
+            percentDisplay.style.color = "#4c9fff";
+            percentDisplay.style.textShadow = "0 0 8px rgba(76, 159, 255, 0.7)";
+          }
+        }
+      }
+    }, 800);
 
     try {
       const apiKey = "AIzaSyAR2Y-3i75WrJCzhPZ7IIsylrewzBKJCYY"; // Direct API key usage
@@ -347,6 +419,9 @@ Keep responses corny but smooth, seductive but not overly cringy.
 
       isWaitingForResponse = false;
       setInputsDisabled(false);
+
+      // Add this right before botPlaceholder.remove() in your API response handler
+      clearInterval(progressInterval);
     } catch (error) {
       console.error("Error getting bot response:", error);
       botPlaceholder.innerHTML = `<div class="formatted-message">Sorry, something went wrong.</div>`;
@@ -357,6 +432,7 @@ Keep responses corny but smooth, seductive but not overly cringy.
       }, 3000);
     } finally {
       scrollChatToBottom();
+      clearInterval(progressInterval);
     }
 
     // Call checkContentHeight after adding a message
@@ -930,4 +1006,18 @@ Keep responses corny but smooth, seductive but not overly cringy.
       // Play a subtle sound or animation to indicate new message
     }
   }
+
+  // Ensure background elements are loaded
+  setTimeout(() => {
+    const circuitBg = document.querySelector(".circuit-background");
+    const reactorGlow = document.querySelector(".reactor-glow");
+
+    if (!circuitBg || !circuitBg.childNodes.length) {
+      console.log("Reloading background elements...");
+      if (typeof createCircuitElements === "function") {
+        createCircuitElements();
+        createReactorGlow();
+      }
+    }
+  }, 1000);
 });
