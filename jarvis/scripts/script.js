@@ -911,35 +911,17 @@ Keep responses corny but smooth, seductive but not overly cringy.
     const hour = new Date().getHours();
 
     let greetingText = "";
-    if (hour < 12) {
+    if (hours >= 5 && hours < 12) {
       greetingText = "Good Morning!";
-    } else if (hour < 18) {
+    } else if (hours >= 12 && hours < 17) {
       greetingText = "Good Afternoon!";
-    } else {
+    } else if (hours >= 17 && hours < 21) {
       greetingText = "Good Evening!";
+    } else {
+      greetingText = "Good Night!";
     }
 
     greeting.textContent = greetingText;
-
-    // Update the greeting message based on the time of day
-    const date = new Date();
-    const hours = date.getHours();
-    let greetingMessage = "";
-
-    // Select a random greeting based on the time of day
-    if (hours >= 5 && hours < 12) {
-      greetingMessage =
-        morningGreets[Math.floor(Math.random() * morningGreets.length)];
-    } else if (hours >= 12 && hours < 17) {
-      greetingMessage =
-        afternoonGreets[Math.floor(Math.random() * afternoonGreets.length)];
-    } else if (hours >= 17 && hours < 21) {
-      greetingMessage =
-        eveningGreets[Math.floor(Math.random() * eveningGreets.length)];
-    } else {
-      greetingMessage =
-        nightGreets[Math.floor(Math.random() * nightGreets.length)];
-    }
 
     // Add Jarvis-style status message
     const statusElement = document.createElement("p");
