@@ -140,21 +140,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const existingCount = photoBtn.querySelector(".image-count");
     if (imageCount > 0) {
       if (existingCount) {
-        // Update existing count with scale animation and play sound
-        existingCount.textContent = `+${imageCount}`;
-        existingCount.classList.remove("update-animation");
-        void existingCount.offsetWidth; // Force reflow
-        existingCount.classList.add("update-animation");
+        existingCount.textContent = imageCount;
+        existingCount.style.animation = "none";
+        setTimeout(() => {
+          existingCount.style.animation =
+            "countPulse 0.5s cubic-bezier(0.11, 0.44, 0.12, 1.29)";
+        }, 10);
       } else {
-        // New count with rotate animation
-        const countElement = document.createElement("div");
-        countElement.className = "image-count";
-        countElement.textContent = `+${imageCount}`;
-        photoBtn.appendChild(countElement);
+        const counter = document.createElement("span");
+        counter.className = "image-count";
+        counter.textContent = imageCount;
+        photoBtn.appendChild(counter);
       }
-      playCounterUpdateSound(); // Play sound when counter updates
-    } else if (existingCount) {
-      existingCount.remove();
+      photoBtn.classList.add("image-uploading");
+    } else {
+      if (existingCount) {
+        photoBtn.removeChild(existingCount);
+      }
+      photoBtn.classList.remove("image-uploading");
     }
   }
 
@@ -511,9 +514,8 @@ Keep responses corny but smooth, seductive but not overly cringy.
               const language = block.language || "plaintext";
               htmlContent += `
                     <div class="code-block">
-                      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                      <span class="language-label">${language}</span>
-                      <pre><code class="language-${language}">${safeCode}</code></pre>
+                     
+                      <pre><code class="language">${safeCode}</code></pre>
                     </div>
                     <br>`; // Add <br> after code block
             } else if (block.type === "image") {
@@ -598,6 +600,12 @@ Keep responses corny but smooth, seductive but not overly cringy.
     if (sender === "bot") {
       indicateNewMessage();
     }
+
+    // After adding content to the chat box, enhance images and code blocks
+    setTimeout(() => {
+      enhanceImages();
+      enhanceCodeBlocks();
+    }, 100);
   };
 
   window.copyCode = function (button) {
@@ -1002,4 +1010,99 @@ Keep responses corny but smooth, seductive but not overly cringy.
       }
     }
   }, 1000);
+
+  // Add this function to enhance image handling
+  function enhanceImages() {
+    const chatImages = document.querySelectorAll(".chat-image");
+
+    chatImages.forEach((img) => {
+      // Only process images that haven't been enhanced
+      if (img.dataset.enhanced) return;
+
+      // Create container for loading effect
+      const container = document.createElement("div");
+      container.className = "image-container";
+      img.parentNode.insertBefore(container, img);
+      container.appendChild(img);
+
+      // Add click to view full size functionality
+      img.addEventListener("click", () => {
+        const overlay = document.createElement("div");
+        overlay.className = "image-overlay";
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100%";
+        overlay.style.height = "100%";
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+        overlay.style.display = "flex";
+        overlay.style.alignItems = "center";
+        overlay.style.justifyContent = "center";
+        overlay.style.zIndex = "9999";
+        overlay.style.cursor = "zoom-out";
+        overlay.style.backdropFilter = "blur(10px)";
+
+        const fullImg = document.createElement("img");
+        fullImg.src = img.src;
+        fullImg.style.maxWidth = "90%";
+        fullImg.style.maxHeight = "90%";
+        fullImg.style.borderRadius = "5px";
+        fullImg.style.boxShadow = "0 0 30px rgba(10, 132, 255, 0.3)";
+        fullImg.style.border = "1px solid rgba(255, 255, 255, 0.1)";
+        fullImg.style.animation =
+          "imageZoomIn 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)";
+
+        overlay.appendChild(fullImg);
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener("click", () => {
+          overlay.style.animation = "fadeOut 0.2s forwards";
+          setTimeout(() => {
+            document.body.removeChild(overlay);
+          }, 200);
+        });
+      });
+
+      // Mark as enhanced
+      img.dataset.enhanced = "true";
+    });
+  }
+
+  // Add this to enhance code blocks
+  function enhanceCodeBlocks() {
+    document.querySelectorAll("pre code").forEach((codeBlock) => {
+      // Only enhance if not already processed
+      if (codeBlock.dataset.enhanced) return;
+
+      const pre = codeBlock.parentElement;
+
+      // Add language tag if it exists
+      const language = codeBlock.className.split("-")[1];
+      if (language) {
+        pre.setAttribute("data-language", language);
+      }
+
+      // Add copy button
+      const copyButton = document.createElement("button");
+      copyButton.className = "copy-code-button";
+      copyButton.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+
+      copyButton.addEventListener("click", () => {
+        navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+          copyButton.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+          copyButton.classList.add("copied");
+
+          setTimeout(() => {
+            copyButton.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+            copyButton.classList.remove("copied");
+          }, 2000);
+        });
+      });
+
+      pre.appendChild(copyButton);
+
+      // Mark as enhanced
+      codeBlock.dataset.enhanced = "true";
+    });
+  }
 });
