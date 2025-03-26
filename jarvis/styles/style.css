@@ -51,7 +51,7 @@ body {
     rgba(10, 14, 23, 0.95) 80%,
     rgba(10, 14, 23, 0.5) 100%
   );
-  border-bottom: 1px solid rgba(10, 132, 255, 0.1);
+  border-bottom: 1px solid rgba(10, 132, 255, 0.15);
   margin-bottom: 15px;
   z-index: 10;
 }
@@ -144,9 +144,10 @@ body {
 /* Add this new style for chat history items */
 .chat-history-item {
   padding: 12px 15px;
-  background: rgba(10, 20, 40, 0.3);
+  background: rgba(10, 20, 40, 0.25);
   border-radius: 10px;
   border-left: 2px solid var(--primary-blue);
+  border: 1px solid rgba(10, 132, 255, 0.05);
   margin: 5px 0;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -241,7 +242,6 @@ body {
   color: var(--text-light);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 5px var(--accent-glow);
   position: relative;
   overflow: hidden;
 }
@@ -264,7 +264,8 @@ body {
 
 .sidebar button:hover {
   background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .sidebar button:hover::before {
@@ -290,9 +291,9 @@ body {
   position: relative;
   margin-bottom: 20px;
   padding: 15px;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   background: linear-gradient(135deg, rgba(10, 132, 255, 0.1), transparent);
-  border: 1px solid rgba(10, 132, 255, 0.2);
+  border: 1px solid rgba(10, 132, 255, 0.15);
   overflow: hidden;
 }
 
@@ -352,7 +353,7 @@ body {
 .chat_container {
   background-color: rgba(10, 20, 40, 0.3);
   border-radius: 15px;
-  border: 1px solid rgba(10, 132, 255, 0.15);
+  border: 1px solid rgba(10, 132, 255, 0.25);
   box-shadow: 0 0 20px rgba(10, 132, 255, 0.05);
   width: 75%;
   min-height: 60vh;
@@ -385,7 +386,7 @@ body {
 
 .message {
   position: relative;
-  margin: 15px 0;
+  /* margin: 15px 0; */
   padding: 12px 15px;
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
@@ -466,9 +467,9 @@ body {
   right: 0;
   padding: 20px 15px;
   z-index: 10;
-  background: linear-gradient(to top, var(--background-dark), transparent);
+  background: linear-gradient(to top, black, transparent);
   backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(10, 132, 255, 0.1);
+  /* border-top: 1px solid rgba(10, 132, 255, 0.1); */
 }
 
 .txtarea {
@@ -481,7 +482,7 @@ body {
   justify-content: space-between;
   width: 70%;
   color: var(--text-light);
-  border: 1px solid rgba(10, 132, 255, 0.2);
+  border: 1px solid rgba(10, 132, 255, 0.25);
   margin: 10px auto;
   background: rgba(10, 20, 40, 0.4);
   box-shadow: 0 0 20px rgba(10, 132, 255, 0.1);
@@ -527,7 +528,7 @@ body {
 .txtarea:focus-within {
   border-color: var(--primary-blue);
   box-shadow: 0 0 25px rgba(10, 132, 255, 0.2);
-  transform: translateY(-2px);
+  /* transform: translateY(-2px); */
 }
 
 .txtarea:focus-within::before,
@@ -540,10 +541,10 @@ body {
   width: 100%;
   font-size: 16px;
   height: 40px;
+  line-height: 1.5;
   border: none;
   resize: none;
   color: var(--text-light);
-  line-height: 1.5;
   background: transparent;
   white-space: pre-wrap;
   text-align: start;
@@ -571,8 +572,8 @@ body {
   gap: 15px;
   padding: 8px 10px;
   border-radius: 8px;
-  background: rgba(10, 20, 40, 0.5);
-  border-top: 1px solid rgba(10, 132, 255, 0.1);
+  /* background: rgba(10, 20, 40, 0.5);
+  border-top: 1px solid rgba(10, 132, 255, 0.1); */
 }
 
 .txtarea .btns i {
@@ -590,7 +591,7 @@ body {
 
 .attachments {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: center;
 }
 
@@ -607,7 +608,7 @@ body {
 }
 
 .attachments span:hover {
-  background: rgba(10, 132, 255, 0.1);
+  background: rgba(10, 132, 255, 0.05);
   transform: translateY(-2px);
 }
 
@@ -619,7 +620,7 @@ body {
 .attachments span i:hover {
   color: var(--primary-blue);
   transform: scale(1.1);
-  text-shadow: 0 0 8px var(--accent-glow);
+  text-shadow: 0 0 5px var(--accent-glow);
 }
 
 #send-btn {
@@ -786,11 +787,6 @@ p code {
   }
 }
 
-/* Remove the old visualizer styles and add new pulse effect */
-#audio-visualizer-container {
-  display: none !important; /* Hide the old visualizer */
-}
-
 #microphone-btn {
   position: relative;
   transition: border-color 0.3s ease; /* Smooth transition for border color */
@@ -852,7 +848,7 @@ p code {
     width: 90%;
     border-radius: 40px;
     flex-direction: column;
-    padding: 20px 20px 0px 30px;
+    padding: 20px 20px 0px 20px;
     box-shadow: 0 4px 6px rgba(113, 113, 113, 0.1);
   }
 
@@ -860,6 +856,8 @@ p code {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    background: transparent;
+    border: none;
   }
 
   /* #photo {
@@ -879,8 +877,9 @@ p code {
   }
 
   .txtarea textarea {
-    height: 80px; /* Set initial height to 80px for mobile */
-    font-size: 16px;
+    height: 80px; /* Set initial height for mobile */
+    font-size: 16px; /* Ensure consistent font size */
+    line-height: 1.5; /* Ensure consistent line-height */
     padding: 10px 10px 10px 10px;
   }
   .txtarea textarea::placeholder {
@@ -888,13 +887,14 @@ p code {
   }
 
   .attachments {
-    gap: 30px;
+    gap: 20px;
   }
 
   .attachments span {
-    border: 1px solid #c2cfff9a;
+    /* border: 1px solid #c2cfff9a; */
+    border: 1px solid rgba(10, 132, 255, 0.25);
     gap: 10px;
-    border-radius: 50px;
+    border-radius: 40px;
     padding: 15px 20px 15px 20px;
     font-size: 25px;
     color: rgba(255, 255, 255, 0.423);
@@ -1294,6 +1294,7 @@ mjx-container[jax="CHTML"][display="true"] {
 
 /* New message indicator for scroll button */
 #scrollBtn.new-message {
+  display: block;
   animation: newMessagePulse 2s infinite;
 }
 
@@ -1360,7 +1361,7 @@ mjx-container[jax="CHTML"][display="true"] {
 .message.bot:hover,
 .message.user:hover {
   transform: translateX(3px);
-  box-shadow: 0 0 15px rgba(10, 132, 255, 0.2);
+  /* box-shadow: 0 0 10px rgba(181, 218, 255, 0.15); */
   transition: all 0.3s ease;
 }
 
