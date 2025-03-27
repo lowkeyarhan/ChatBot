@@ -623,7 +623,7 @@ pre code p {
   overflow-y: auto;
   padding: 15px;
   margin-top: 40px;
-  background-color: rgb(15, 29, 57);
+  background: rgb(15, 29, 57);
   color: #ffffff;
   font-family: "Fira Code", monospace;
 }
