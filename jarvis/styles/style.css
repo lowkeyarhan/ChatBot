@@ -915,14 +915,6 @@ p code {
     border-radius: 15px 15px 15px 0px;
   }
 
-  #scrollBtn {
-    bottom: 100px;
-    right: 20px;
-    height: 60px;
-    width: 60px;
-    font-size: 24px;
-  }
-
   .typewriter {
     font-size: 35px !important;
   }
@@ -1270,101 +1262,6 @@ mjx-container[jax="CHTML"][display="true"] {
 
 .image-count.update-animation {
   animation: countUpdate 0.3s ease-in-out, pulse-border 3s infinite;
-}
-
-#scrollBtn {
-  position: fixed;
-  z-index: 1000;
-  color: var(--text-light);
-  bottom: 37px;
-  right: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  font-size: 20px;
-  background: linear-gradient(
-    145deg,
-    rgba(15, 25, 45, 0.8),
-    rgba(10, 20, 40, 0.9)
-  );
-  border: 1px solid rgba(10, 132, 255, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(10, 132, 255, 0.2);
-  opacity: 0;
-  transform: translateY(20px);
-  backdrop-filter: blur(5px);
-}
-
-#scrollBtn.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-#scrollBtn::before {
-  content: "";
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  border-radius: 50%;
-  background: linear-gradient(
-    45deg,
-    transparent,
-    rgba(10, 132, 255, 0.3),
-    transparent
-  );
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.3s ease;
-}
-
-#scrollBtn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(10, 132, 255, 0.4);
-}
-
-#scrollBtn:hover::before {
-  opacity: 1;
-  animation: rotate 2s linear infinite;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-#scrollBtn i {
-  animation: pulse 2s infinite alternate;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-}
-
-@media (max-width: 1000px) {
-  #scrollBtn {
-    bottom: 100px;
-    right: 20px;
-    height: 60px;
-    width: 60px;
-    font-size: 24px;
-  }
 }
 
 @keyframes slideInFromRight {
