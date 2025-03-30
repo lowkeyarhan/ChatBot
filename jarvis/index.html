@@ -6,7 +6,11 @@
       name="description"
       content="Jarvis—your cute, little companion, built to comfort, uplift, and ensure you're never alone."
     />
-  
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
     <title>Jarvis: AI behind the armour</title>
 
     <!-- Consolidated CSS Links -->
@@ -144,6 +148,25 @@
           minRuleThickness: 0.05,
           strict: false,
         };
+
+        // Render math expressions using KaTeX
+        document.querySelectorAll(".math").forEach((element) => {
+          try {
+            katex.render(element.textContent, element, {
+              throwOnError: false,
+              displayMode: false,
+            });
+          } catch (error) {
+            console.error("KaTeX rendering error:", error);
+          }
+        });
+
+        // Initialize MathJax
+        if (window.MathJax) {
+          MathJax.typesetPromise().catch((err) =>
+            console.error("MathJax error:", err)
+          );
+        }
       });
       hljs.highlightAll();
     </script>

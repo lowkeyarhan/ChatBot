@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const adjustTextareaHeight = () => {
     // Set initial height based on viewport width
     if (window.innerWidth <= 1000) {
-      textarea.style.height = "80px"; // Set initial height to 80px for mobile
+      textarea.style.height = "50px"; // Set initial height to 50px for mobile
     } else {
       textarea.style.height = "40px"; // Set initial height to 40px for desktop
     }

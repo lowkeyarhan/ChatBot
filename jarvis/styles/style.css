@@ -265,7 +265,7 @@ body {
   margin-bottom: 20px;
   padding: 15px;
   background: linear-gradient(135deg, rgba(10, 132, 255, 0.1), transparent);
-  border: 1px solid rgba(10, 132, 255, 0.15);
+  border-bottom: 1px solid rgba(10, 132, 255, 0.15);
   overflow: hidden;
 }
 
@@ -371,7 +371,6 @@ body {
   align-self: flex-end;
   color: rgba(204, 224, 252);
   margin-left: auto;
-  animation: slideInFromRight 0.7s ease-in-out;
   border-radius: 20px 20px 0px 20px;
   padding: 15px;
   max-width: 80%;
@@ -388,7 +387,6 @@ body {
   margin-right: auto;
   border-style: none;
   border-radius: 20px 20px 20px 0px;
-  animation: receiveMessage 0.5s ease-out;
   padding: 15px;
   word-wrap: break-word;
   max-width: 80%;
@@ -464,19 +462,6 @@ body {
 
 .txtarea::before,
 .txtarea::after {
-  /* content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--primary-blue),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity 0.5s ease; */
   display: none;
 }
 
@@ -517,7 +502,6 @@ body {
 
 .txtarea textarea:focus {
   outline: none;
-  padding: 10px;
 }
 
 .txtarea .btns {
@@ -544,7 +528,6 @@ body {
 .attachments {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .attachments span {
@@ -554,7 +537,6 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  /* background: rgba(10, 132, 255, 0.1); */
   transition: all 0.3s ease;
 }
 
@@ -644,31 +626,6 @@ pre code p {
   opacity: 1;
 }
 
-.typewriter {
-  display: inline-block;
-  font-family: monospace;
-  border-right: 2px solid #e0e0e0;
-  padding-right: 4px;
-  animation: blink 0.75s step-end infinite;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-@keyframes blink {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #e0e0e0;
-  }
-}
-
-.loading .formatted-message {
-  color: #8b8b8b;
-  font-style: italic;
-}
-
 b {
   font-size: 18px;
   font-weight: 650;
@@ -691,7 +648,6 @@ p code {
 
 .message.bot {
   opacity: 1;
-  animation: messageInBot 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 @keyframes messageInBot {
@@ -730,10 +686,6 @@ p code {
 
 .recording .attachments span {
   box-shadow: 0 0 15px rgba(79, 184, 255, 0.5);
-}
-
-.recording .attachments span {
-  animation: border-pulse 5s infinite;
 }
 
 .chat-image {
@@ -791,7 +743,7 @@ p code {
   top: 0;
   left: -100%;
   width: 50%;
-  height: 100%;
+  height: calc(100% - 8px);
   background: linear-gradient(
     90deg,
     transparent,
@@ -811,40 +763,71 @@ p code {
   }
 }
 
-@media (max-width: 1000px) {
-  .chat-image {
-    border-radius: 30px 30px 0px 0px;
+@media (min-width: 1001px) {
+  /* Desktop styles */
+  .txtarea textarea {
+    height: 40px;
   }
+
+  #scrollBtn:hover {
+    transform: scale(1.1) rotate(20deg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    color: #fff;
+    animation: pulse-border 3s infinite;
+  }
+}
+
+@media (max-width: 1000px) {
+  /* Mobile/Tablet styles */
+  .chat-image {
+    border-radius: 10px 10px 0px 0px;
+  }
+
   .sidebar {
     display: none;
   }
+
   .main {
     height: 100vh;
   }
+
   .greeting {
-    padding: 40px;
+    padding: 30px 20px 30px 15px;
+    overflow: visible;
+    margin-bottom: 15px;
   }
+
   .greeting h1 {
-    font-size: 50px;
-    margin: 20px 0px 20px 0px;
+    font-size: 8vw;
+    margin: 0px 0px 10px 0px;
   }
-  .greeting .status-message {
+
+  .greeting p.status-message {
     margin: 0px;
+    font-size: 3vw !important;
   }
+
   #userchat {
-    gap: 2.5rem;
+    gap: 1.5rem;
     padding: 0px;
   }
 
   .message .bot .formatted-message {
     border-radius: 30px;
   }
+
+  .txtbg {
+    backdrop-filter: none;
+    padding: 15px;
+  }
+
   .txtarea {
-    width: 90%;
-    border-radius: 40px;
+    width: auto;
+    border-radius: 15px;
     flex-direction: column;
-    padding: 20px 20px 0px 20px;
     box-shadow: 0 4px 6px rgba(113, 113, 113, 0.1);
+    margin: 0px;
+    padding: 5px 10px;
   }
 
   .txtarea .btns {
@@ -853,69 +836,83 @@ p code {
     width: 100%;
     background: transparent;
     border: none;
+    padding: 0px;
+    padding-bottom: 5px;
   }
 
   .txtarea .btns #send-btn {
-    font-size: 50px !important;
+    font-size: 25px !important;
     height: fit-content;
-    padding: 20px;
   }
 
   .txtarea .btns i {
-    font-size: 25px;
+    font-size: 14px;
     color: #c2cfff9a;
   }
 
+  b {
+    font-size: 16px;
+  }
+
   .txtarea textarea {
-    height: 80px;
-    /* font-size: 30px; */
     line-height: 1.5;
-    /* padding: 10px 10px 10px 10px; */
+    padding: 10px 10px 00px 0px;
     align-items: center;
   }
+
   .txtarea textarea::placeholder {
-    font-size: 35px;
+    font-size: 14px;
   }
 
   .txtarea textarea:focus {
-    font-size: 20px;
+    font-size: 14px;
   }
+
   .attachments {
-    gap: 20px;
+    gap: 1rem;
   }
 
   .attachments span {
     border: 1px solid rgba(10, 132, 255, 0.25);
-    gap: 10px;
-    border-radius: 40px;
-    padding: 15px 20px 15px 20px;
-    font-size: 25px;
+    gap: 5px;
+    border-radius: 20px;
+    padding: 0px 5px 0px 5px;
+    font-size: 10px;
     color: rgba(255, 255, 255, 0.423);
-    width: 113px;
+    width: 60px;
+    height: 30px;
     text-align: center;
+    align-items: center;
   }
 
-  p {
-    font-size: 25px !important;
+  #send-btn:hover::after {
+    background: none;
+  }
+
+  #send-btn::after {
+    transform: none;
   }
 
   .chat_container {
     width: 88%;
-    padding-top: 40px;
-  }
-  .formatted-message p {
-    font-size: 25px;
+    padding: 20px 10px 10px 10px;
+    border-radius: 15px;
+    margin: 0px auto 0px auto;
   }
 
   .message.user {
-    border-radius: 40px 40px 0px 40px;
-    padding: 20px 25px 20px 20px;
+    border-radius: 15px 15px 0px 15px;
+    padding: 10px 15px 10px 15px;
     max-width: 80%;
+    font-size: 14px;
+    border-left: 1.25px solid var(--primary-blue);
   }
+
   .message.bot {
     max-width: 95%;
-    padding: 20px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 15px 15px 15px 0px;
   }
 
   #scrollBtn {
@@ -933,14 +930,18 @@ p code {
   .code-block pre {
     font-size: 20px !important;
     margin-top: 65px;
+    padding: 15px !important;
   }
+
   .code-block {
     line-height: 1.4;
   }
+
   .language-label {
     font-size: 20px !important;
     top: 15px;
   }
+
   .copy-btn {
     font-size: 25px !important;
     padding: 10px;
@@ -949,11 +950,12 @@ p code {
 
   .image-count {
     background-color: #e80e0e !important;
-    padding: 15px !important;
-    font-size: 20px !important;
-    top: -20px !important;
-    right: -15px !important;
+    padding: 0px !important;
+    font-size: 10px !important;
+    top: -10px !important;
+    right: -10px !important;
     opacity: 0.7 !important;
+    border: none !important;
   }
 
   .MathJax,
@@ -962,37 +964,96 @@ p code {
     font-size: 25px !important;
   }
 
-  p {
-    font-size: 25px !important;
-  }
-
   .code-block pre,
   .code-block pre code,
   .code-block pre p,
   .code-block code p {
     font-family: "Fira Code", monospace !important;
-    font-size: 25px !important;
+    font-size: 12px !important;
   }
-  pre::before {
-    height: 60px !important;
-  }
-  pre::after {
-    font-size: 20px !important;
-    align-items: center;
-    top: 10px !important;
-    right: 10px !important;
-  }
-}
 
-@media (min-width: 1001px) {
-  .txtarea textarea {
-    height: 40px;
+  pre::before {
+    height: 50px;
   }
-  #scrollBtn:hover {
-    transform: scale(1.1) rotate(20deg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    color: #fff;
-    animation: pulse-border 3s infinite;
+
+  pre::after {
+    font-size: 15px;
+    align-items: center;
+    background-color: #000000 !important;
+    top: 8px !important;
+    right: 8px !important;
+  }
+
+  /* Loading animation styles for mobile */
+  .message.bot.loading {
+    min-height: 80px;
+  }
+
+  .jarvis-analyzer {
+    width: 90%;
+    max-width: 300px;
+    height: 90px;
+    border-radius: 45px;
+    padding: 0 15px;
+  }
+
+  .arc-reactor {
+    width: 50px;
+    height: 50px;
+  }
+
+  .reactor-inner {
+    width: 25px;
+    height: 25px;
+  }
+
+  .reactor-ring {
+    width: 50px;
+    height: 50px;
+    border-width: 2px;
+  }
+
+  .reactor-ring::before,
+  .reactor-ring::after {
+    border-width: 1.5px;
+  }
+
+  .hud-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .hud-bar {
+    height: 6px;
+    border-radius: 3px;
+  }
+
+  .hud-percent {
+    font-size: 18px;
+    min-width: 50px;
+  }
+
+  .hud-metrics {
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .metric-item {
+    margin-right: 6px;
+  }
+
+  .metric-item::before {
+    width: 10px;
+    height: 10px;
+  }
+
+  .math,
+  .katex,
+  .MathJax {
+    font-size: 25px !important;
   }
 }
 
@@ -1035,10 +1096,6 @@ p .MathJax {
 }
 
 @media (max-width: 1000px) {
-  .message p {
-    font-size: 25px !important;
-  }
-
   .math,
   .katex,
   .MathJax {
@@ -1371,25 +1428,6 @@ mjx-container[jax="CHTML"][display="true"] {
   opacity: 0;
   z-index: -1;
   transition: all 0.5s ease;
-}
-
-.message.bot::after {
-  animation: messagePulse 2s ease-out;
-}
-
-@keyframes messagePulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(10, 132, 255, 0.3);
-    opacity: 1;
-  }
-  70% {
-    box-shadow: 0 0 0 12px rgba(10, 132, 255, 0);
-    opacity: 0.5;
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(10, 132, 255, 0);
-    opacity: 0;
-  }
 }
 
 .message.bot:hover,
@@ -1794,60 +1832,68 @@ mjx-container[jax="CHTML"][display="true"] {
 
 @media (max-width: 1000px) {
   .message.bot.loading {
-    min-height: 120px;
+    min-height: 80px;
   }
 
   .jarvis-analyzer {
-    width: 380px;
-    height: 110px;
-    border-radius: 55px;
-    padding: 0 25px;
+    width: 90%;
+    max-width: 300px;
+    height: 90px;
+    border-radius: 45px;
+    padding: 0 15px;
   }
 
   .arc-reactor {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
   }
 
   .reactor-inner {
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
   }
 
   .reactor-ring {
-    width: 65px;
-    height: 65px;
-    border-width: 3px;
+    width: 50px;
+    height: 50px;
+    border-width: 2px;
   }
 
   .reactor-ring::before,
   .reactor-ring::after {
-    border-width: 2px;
+    border-width: 1.5px;
   }
 
   .hud-title {
-    font-size: 22px;
-    margin-bottom: 12px;
+    font-size: 16px;
+    margin-bottom: 8px;
   }
 
   .hud-bar {
-    height: 8px;
-    border-radius: 4px;
+    height: 6px;
+    border-radius: 3px;
   }
 
   .hud-percent {
-    font-size: 24px;
-    min-width: 80px;
+    font-size: 18px;
+    min-width: 50px;
   }
 
   .hud-metrics {
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .metric-item {
+    margin-right: 6px;
   }
 
   .metric-item::before {
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
   }
 }
 
@@ -1873,7 +1919,7 @@ pre::before {
   left: 0;
   right: 0;
   height: 36px;
-  background: linear-gradient(to bottom, rgba(6, 11, 19, 0.9), transparent);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
   border-radius: 12px 12px 0 0;
   /* border-bottom: 1px solid rgba(10, 132, 255, 0.2); */
   pointer-events: none;
@@ -2045,16 +2091,5 @@ pre:hover .copy-code-button {
   100% {
     opacity: 0;
     transform: translateY(-10px);
-  }
-}
-
-@media (max-width: 600px) {
-  .attachments span {
-    width: 36px;
-    height: 36px;
-  }
-
-  .attachments span i {
-    font-size: 16px;
   }
 }
