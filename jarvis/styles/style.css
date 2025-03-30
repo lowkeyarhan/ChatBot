@@ -818,7 +818,7 @@ p code {
 
   .txtbg {
     backdrop-filter: none;
-    padding: 15px;
+    padding: 10px;
     z-index: initial;
     position: initial;
   }
@@ -902,6 +902,7 @@ p code {
     border-radius: 15px;
     margin: 0px auto 0px auto;
     min-height: initial;
+    position: initial;
   }
 
   .message.user {
