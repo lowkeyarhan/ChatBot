@@ -819,6 +819,8 @@ p code {
   .txtbg {
     backdrop-filter: none;
     padding: 15px;
+    z-index: initial;
+    position: initial;
   }
 
   .txtarea {
@@ -828,6 +830,7 @@ p code {
     box-shadow: 0 4px 6px rgba(113, 113, 113, 0.1);
     margin: 0px;
     padding: 5px 10px;
+    position: initial;
   }
 
   .txtarea .btns {
