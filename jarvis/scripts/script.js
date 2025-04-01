@@ -20,23 +20,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Function to adjust the height of the textarea
   const adjustTextareaHeight = () => {
-    // Set initial height based on viewport width
     if (window.innerWidth <= 1000) {
       textarea.style.height = "50px"; // Set initial height to 50px for mobile
     } else {
       textarea.style.height = "40px"; // Set initial height to 40px for desktop
     }
-    // textarea.style.overflow = "hidden"; // Prevent scrolling
     textarea.style.height = `${Math.min(textarea.scrollHeight, 150)}px`; // Adjust height dynamically, max 150px
   };
 
-  // Add event listener for input changes
   textarea.addEventListener("input", adjustTextareaHeight);
-
-  // Call the function initially to set the correct state
   adjustTextareaHeight();
-
-  // Add event listener for window resize to adjust textarea height
   window.addEventListener("resize", adjustTextareaHeight);
 
   function scrollChatToBottom() {
@@ -72,7 +65,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Add sound function after existing sound functions
   function playCounterUpdateSound() {
     try {
       const audio = new Audio("/sounds/moan.mp3");
@@ -393,11 +385,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Call checkContentHeight after adding a message
     checkContentHeight();
-
-    // Add this line after the sendMessage function
     addChatToHistory(userMessage);
-
-    // Add after the sendMessage function
     indicateNewMessage();
   };
 
@@ -536,7 +524,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     messageElement.appendChild(formattedMessage);
     chatBox.appendChild(messageElement);
 
-    // Call checkContentHeight after adding a message
     setTimeout(checkContentHeight, 100);
 
     // Add this block to render math expressions
@@ -561,14 +548,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 100);
   };
 
-  // Replace Azure speech config with Web Speech API and Google fallback
   function initializeSpeechRecognition() {
     if (!("webkitSpeechRecognition" in window)) {
       return null;
     }
 
     const recognition = new webkitSpeechRecognition();
-    recognition.continuous = false; // Changed to false to prevent network errors
+    recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = "en-US";
     recognition.maxAlternatives = 1;
@@ -621,7 +607,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             stopRecording();
             break;
           default:
-            // For other errors, just restart if still recording
             if (isRecording) {
               recognition.start();
             }
@@ -703,10 +688,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  // Call it initially
   updateButtonText();
-
-  // Add resize listener
   window.addEventListener("resize", updateButtonText);
 
   // Improve the checkContentHeight function
@@ -714,7 +696,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const chatBox = document.getElementById("userchat");
     if (!chatBox) return;
 
-    // Keep only the scrolling functionality
     chatBox.scrollTo({
       top: chatBox.scrollHeight,
       behavior: "smooth",
@@ -983,11 +964,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       greeting.insertAdjacentElement("afterend", statusElement);
     }
   }
-
-  // Call the function initially to set the correct state
   updateGreeting();
-
-  // Update greeting every minute
   setInterval(updateGreeting, 30000);
 
   // Add this function after the sendMessage function
@@ -1116,8 +1093,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const language = codeBlock.className.split("-")[1];
         if (language) {
           pre.setAttribute("data-language", language);
-
-          // Make the language tag clickable for copy functionality
           pre.addEventListener("click", (e) => {
             // Check if the click was on or near the language tag (top-right area)
             const rect = pre.getBoundingClientRect();
@@ -1145,8 +1120,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
           });
         }
-
-        // Mark as enhanced
         codeBlock.dataset.enhanced = "true";
       });
   }
