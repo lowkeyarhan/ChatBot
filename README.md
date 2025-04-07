@@ -1,3 +1,5 @@
+**NOTE: This project has been discontinued.**
+
 J.A.R.V.I.S – Your AI Companion, Coder, Roaster & Butler
 
 Hey there, gorgeous! Welcome to JARVIS, the AI that’s always at your service—whether you need a problem solved, someone to share all your tea, code written, jokes, or just someone to tell you how stunning you look today.
